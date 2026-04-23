@@ -12,3 +12,7 @@ Route::get('/ping', function (){
         'message' => 'pong! koneksi clear'
     ]);
 });
+
+
+Route::get('/post', function () {
+    dd('test api');});
