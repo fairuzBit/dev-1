@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -12,3 +13,11 @@ Route::get('/ping', function (){
         'message' => 'pong! koneksi clear'
     ]);
 });
+
+
+Route::get('/post', function () {
+    dd('test api');});
+
+Route::post('/register', [AuthController::class, 'register']);
+
+Route::post('/login', [AuthController::class, 'login']);
