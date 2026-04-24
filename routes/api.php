@@ -9,8 +9,6 @@ Route::get('/user', function (Request $request) {
 
 Route::get('/ping', function (){
     return response()->json([
-        'message' => 'pong! koneksi clearcomposer require spatie/laravel-permission
-php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvider"
-php artisan migrate'
+        'message' => 'pong! koneksi clear'
     ]);
 });
