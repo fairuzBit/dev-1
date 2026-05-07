@@ -13,7 +13,11 @@ use App\Http\Resources\UserResource;
 
 class AuthController extends Controller
 {
-    
+    /**
+     * Summary of register
+     * 
+     * @unauthenticated
+     */
     public function register(RegisterRequest $request, UserService $userService) {
         
         
@@ -29,7 +33,11 @@ class AuthController extends Controller
         ]);
     }
 
-
+    /**
+     * Summary of register
+     * 
+     * @unauthenticated
+     */
     public function login(LoginRequest $request) {
         $credentials = $request->validate([
             'email' => 'required|email',
@@ -47,5 +55,10 @@ class AuthController extends Controller
             ]);
         }
         return response()->json(['message' => 'Email atau Password salah'], 401);
+    }
+       public function getUser(\Illuminate\Http\Request $request) {
+        return response()->json([
+            'user' => new UserResource($request->user())
+        ]);
     }
 }
