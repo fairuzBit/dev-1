@@ -6,13 +6,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
-})->middleware('auth:sanctum');
+})->middleware('auth:api');
 
-Route::get('/ping', function (){
-    return response()->json([
-        'message' => 'pong! koneksi clear'
-    ]);
-});
+
 
 
 Route::get('/post', function () {

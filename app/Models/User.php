@@ -5,14 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens; // 1. Tambahkan ini untuk Sanctum
+//use Laravel\Sanctum\HasApiTokens; // 1. Tambahkan ini untuk Sanctum
 use Spatie\Permission\Traits\HasRoles; // 2. Tambahkan ini untuk Spatie
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable
+class User extends Authenticatable implements JWTSubject
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     // 3. Masukkan Trait tersebut ke dalam class
-    use HasApiTokens, HasFactory, Notifiable, HasRoles;
+    use HasFactory, Notifiable, HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -47,4 +48,23 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return mixed
+     */
+    
+    public function getJWTIdentifier(){
+        return $this->getKey();
+        
+    }
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array
+     */
+    public function getJWTCustomClaims(){
+        return [];
+    }
+
 }

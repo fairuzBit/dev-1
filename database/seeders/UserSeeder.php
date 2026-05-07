@@ -17,10 +17,6 @@ class UserSeeder extends Seeder
             [
                 'name' => 'Admin User',
                 'password' => \Illuminate\Support\Facades\Hash::make('password'),
-                'role' => 'admin',
-                'university' => null,
-                'prodi' => null,
-                'nim' => '000000',
             ]
         );
         $admin->assignRole('admin');
@@ -30,10 +26,6 @@ class UserSeeder extends Seeder
             [
                 'name' => 'Tutor User',
                 'password' => \Illuminate\Support\Facades\Hash::make('password'),
-                'role' => 'tutor',
-                'university' => 'Universitas Dian Nuswantoro',
-                'prodi' => 'Teknik Informatika',
-                'nim' => 'A11.2020.00001',
             ]
         );
         $tutor->assignRole('tutor');
@@ -43,10 +35,6 @@ class UserSeeder extends Seeder
             [
                 'name' => 'Learner User',
                 'password' => \Illuminate\Support\Facades\Hash::make('password'),
-                'role' => 'learner',
-                'university' => 'Universitas Dian Nuswantoro',
-                'prodi' => 'Sistem Informasi',
-                'nim' => 'A12.2020.00002',
             ]
         );
         $learner->assignRole('learner');
