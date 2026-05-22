@@ -24,9 +24,18 @@ class RegisterRequest extends FormRequest
     {
         return [
             'fullName' => 'required|string',
-            'email' => 'required|email|unique:users',
+            'email' => 'required|email|unique:users|ends_with:@mhs.dinus.ac.id',
             'password' => 'required|min:8',
-            'role' => 'required|in:learner,tutor'
         ];
     }
+        /**
+     * Get the error messages for the defined validation rules.
+     */
+    public function messages(): array
+    {
+        return [
+            'email.ends_with' => 'Pendaftaran hanya diperbolehkan menggunakan email mahasiswa UDINUS (@mhs.dinus.ac.id).',
+        ];
+    }
+
 }
