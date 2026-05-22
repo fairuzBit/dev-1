@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Auth;
 class AuthController extends Controller
 {
     /**
-     * Summary of register
+     * Register
      * 
      * @unauthenticated
      */
