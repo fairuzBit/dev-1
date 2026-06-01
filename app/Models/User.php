@@ -67,5 +67,13 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims(){
         return [];
     }
+        /**
+     * Relasi ke profil Tutor
+     */
+    public function tutor()
+    {
+        return $this->hasOne(Tutor::class);
+    }
+
 
 }

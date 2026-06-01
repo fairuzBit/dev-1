@@ -11,9 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            // Menambahkan kolom avatar tepat setelah kolom password
-            $table->string('avatar')->nullable()->after('password');
+        Schema::create('master_slots', function (Blueprint $table) {
+            $table->id();
+            $table->string('code')->unique();
+            $table->time('start_time');
+            $table->time('end_time');
+            
+            $table->timestamps();
         });
     }
 
@@ -22,8 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('avatar');
-        });
+        Schema::dropIfExists('master_slots');
     }
 };

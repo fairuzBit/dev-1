@@ -11,14 +11,12 @@ return new class extends Migration
      */
         public function up(): void
     {
-        Schema::create('tutors', function (Blueprint $table) {
+        Schema::create('availability_slots', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
-            $table->text('bio')->nullable();
-            $table->float('rating_avg')->default(0);
-            $table->integer('total_reviews')->default(0);
+            $table->foreignId('tutor_id')->constrained('tutors')->cascadeOnDelete();
+            $table->string('day_of_week'); 
+            $table->foreignId('slot_id')->constrained('master_slots')->cascadeOnDelete();
             $table->boolean('is_active')->default(true);
-            $table->decimal('price',10,2)->default(0);
             $table->timestamps();
         });
     }
@@ -29,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tutors');
+        Schema::dropIfExists('availability_slots');
     }
 };

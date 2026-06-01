@@ -6,6 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Course extends Model
 {
-        protected $fillable = ['name', 'code'];
+    protected $fillable = ['name', 'code'];
 
+    // Relasi ke TutorCourse
+    public function tutors()
+    {
+        return $this->hasMany(TutorCourse::class);
+    }
 }
+
