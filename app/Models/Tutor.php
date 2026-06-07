@@ -20,4 +20,14 @@ class Tutor extends Model
     {
         return $this->hasMany(TutorCourse::class);
     }
+
+    public function bookings()
+    {
+        return $this->hasMany(Booking::class);
+    }
+
+    public function availabilitySlots()
+    {
+        return $this->hasMany(AvailabilitySlot::class);
+    }
 }

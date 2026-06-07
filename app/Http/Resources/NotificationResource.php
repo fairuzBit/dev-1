@@ -17,8 +17,13 @@ class NotificationResource extends JsonResource
             'action_url' => $this->action_url,
             'is_read' => (bool) $this->is_read,
             
-            // Format waktu menjadi ramah manusia (Contoh: "2 hours ago")
-            'created_at' => $this->created_at->diffForHumans(),
+            // Format waktu menjadi ramah manusia (Contoh: "5 menit yang lalu")
+            'time_ago' => $this->created_at->diffForHumans(),
+            
+            // Kategori hari (Hari Ini, Kemarin, dll) untuk membantu Frontend mengelompokkan UI
+            'group' => $this->created_at->isToday() ? 'HARI INI' : ($this->created_at->isYesterday() ? 'KEMARIN' : strtoupper($this->created_at->translatedFormat('d F Y'))),
+            
+            'created_at' => $this->created_at,
             'read_at' => $this->read_at ? $this->read_at->format('Y-m-d H:i') : null,
         ];
     }

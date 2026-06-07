@@ -12,9 +12,13 @@ class BookingResource extends JsonResource
         return [
             'id' => $this->id,
             'booking_date' => $this->booking_date,
-            'total_price' => (int) $this->total_price, // Pastikan tipenya angka bulat (integer)
+            'total_price' => (int) $this->total_price, // Harga tutor saja
+            'service_fee' => (int) $this->service_fee, // Biaya layanan
+            'grand_total' => (int) $this->grand_total, // Harga total
             'status' => $this->status,
             'payment_status' => $this->payment_status,
+            'payment_method' => $this->payment_method,
+            'payment_code' => $this->payment_code,
             
             // Relasi ke Tutor (Memanggil resource Tutor yang sudah Bos punya)
             'tutor' => new TutorResource($this->whenLoaded('tutor')),
@@ -38,6 +42,14 @@ class BookingResource extends JsonResource
                         'code' => $bs->slot->code ?? null, // Mengambil nama sesi dari tabel MasterSlot
                     ];
                 });
+            }),
+            // Relasi ke Ulasan (Review) jika ada
+            'review' => $this->whenLoaded('review', function () {
+                return $this->review ? [
+                    'id' => $this->review->id,
+                    'rating' => $this->review->rating,
+                    'comment' => $this->review->comment,
+                ] : null;
             }),
         ];
     }

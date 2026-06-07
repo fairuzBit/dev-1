@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->text('bio')->nullable();
+            $table->json('skills')->nullable();
             $table->float('rating_avg')->default(0);
             $table->integer('total_reviews')->default(0);
             $table->boolean('is_active')->default(true);

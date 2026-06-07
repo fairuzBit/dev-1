@@ -10,6 +10,9 @@ use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+/**
+ * @tags Authentication
+ */
 class AuthController extends Controller
 {
     /**

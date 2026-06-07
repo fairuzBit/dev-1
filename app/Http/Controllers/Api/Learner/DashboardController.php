@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use App\Services\Learner\DashboardService;
 use App\Http\Resources\BookingResource;
 
+/**
+ * @tags Learner - Dashboard
+ */
 class DashboardController extends Controller
 {
     protected $dashboardService;

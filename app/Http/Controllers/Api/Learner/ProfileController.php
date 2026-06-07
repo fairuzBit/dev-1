@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use App\Services\Learner\ProfileService;
 use App\Http\Resources\UserResource;
 
+/**
+ * @tags Learner - Profile
+ */
 class ProfileController extends Controller
 {
     protected $profileService;
@@ -25,6 +28,25 @@ class ProfileController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Data user berhasil diambil',
+            'data' => new UserResource($user)
+        ]);
+    }
+
+    public function update(Request $request)
+    {
+        $request->validate([
+            'name' => 'nullable|string|max:255',
+            'nim' => 'nullable|string|max:50|unique:users,nim,' . $request->user()->id,
+            'email' => 'nullable|email|unique:users,email,' . $request->user()->id,
+            'phone' => 'nullable|string|max:20',
+            // avatar dikosongkan dulu atau tambah image rule jika ada file upload
+        ]);
+
+        $user = $this->profileService->updateProfile($request->user()->id, $request->only(['name', 'nim', 'email', 'phone']));
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Profil berhasil diperbarui',
             'data' => new UserResource($user)
         ]);
     }

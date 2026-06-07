@@ -27,3 +27,6 @@ yarn-error.log
 /.vscode
 /.zed
 belajar.md
+dcc-struct.md
+erd.md
+.agents/*

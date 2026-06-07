@@ -4,22 +4,32 @@ namespace App\Http\Controllers\Api\Learner;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\TutorResource;
-use App\Models\Tutor;
+use App\Services\Learner\TutorDiscoveryService;
 
+/**
+ * @tags Learner - Tutor Discovery
+ */
 class TutorDiscoveryController extends Controller
 {
+    protected $tutorService;
+
+    public function __construct(TutorDiscoveryService $tutorService)
+    {
+        $this->tutorService = $tutorService;
+    }
+
     /**
      * Menampilkan Katalog Tutor
      */
-    public function index()
+    public function index(\Illuminate\Http\Request $request)
     {
-        // Eager Loading: Mengambil data tutor beserta user dan mapel-nya sekaligus
-        // agar database tidak jebol karena kebanyakan query (N+1 Problem)
-        $tutors = Tutor::with(['user', 'courses.course'])->get();
+        $filters = $request->only(['search', 'course_id', 'day', 'time']);
+        $tutors = $this->tutorService->getAllTutors($filters);
 
-        return response()->json([
-            'message' => 'Berhasil mengambil daftar tutor',
-            'data' => TutorResource::collection($tutors)
+        // Menggunakan Resource::collection pada hasil paginate() akan otomatis menyertakan meta & links
+        return TutorResource::collection($tutors)->additional([
+            'success' => true,
+            'message' => 'Berhasil mengambil daftar tutor'
         ]);
     }
 
@@ -28,15 +38,19 @@ class TutorDiscoveryController extends Controller
      */
     public function show(string $id)
     {
-        $tutor = Tutor::with(['user', 'courses.course'])->find($id);
-
-        if (!$tutor) {
-            return response()->json(['message' => 'Tutor tidak ditemukan'], 404);
+        try {
+            $tutor = $this->tutorService->getTutorById((int) $id);
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Berhasil mengambil detail profil tutor',
+                'data' => new TutorResource($tutor)
+            ]);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Tutor tidak ditemukan'
+            ], 404);
         }
-
-        return response()->json([
-            'message' => 'Berhasil mengambil detail profil tutor',
-            'data' => new TutorResource($tutor)
-        ]);
     }
 }

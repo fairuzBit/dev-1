@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use App\Services\Learner\NotificationService;
 use App\Http\Resources\NotificationResource;
 
+/**
+ * @tags Learner - Notification
+ */
 class NotificationController extends Controller
 {
     protected $notificationService;

@@ -24,10 +24,13 @@ return new class extends Migration
             
             // Data harga (DP dihapus)
             $table->decimal('total_price', 10, 2);
-            
+            $table->decimal('service_fee', 10, 2)->default(15000); // Biaya Layanan Tetap
+            $table->decimal('grand_total', 10, 2); // Harga Total + Layanan
             // Status alur bisnis
             $table->enum('status', ['pending', 'accepted', 'rejected', 'completed', 'cancelled'])->default('pending');
             $table->enum('payment_status', ['unpaid', 'paid', 'refunded'])->default('unpaid');
+            $table->string('payment_method')->nullable(); // bank_transfer, e_wallet, cash
+            $table->string('payment_code')->nullable(); // Nomor VA atau kode bayar
             
             $table->timestamps();
         });

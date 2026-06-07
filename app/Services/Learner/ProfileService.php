@@ -13,4 +13,14 @@ class ProfileService
     {
         return User::findOrFail($userId);
     }
+
+    /**
+     * Memperbarui profil user
+     */
+    public function updateProfile(int $userId, array $data)
+    {
+        $user = User::findOrFail($userId);
+        $user->update($data);
+        return $user;
+    }
 }
