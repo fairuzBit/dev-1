@@ -20,13 +20,30 @@ class RegisterRequest extends FormRequest
      *
      * @return array<string, ValidationRule|array<mixed>|string>
      */
-    public function rules(): array
+       public function rules(): array
     {
         return [
             'fullName' => 'required|string',
-            'email' => 'required|email|unique:users',
+            // Tambahkan starts_with:111 di sini
+            'email' => 'required|email|unique:users|starts_with:111|ends_with:@mhs.dinus.ac.id', 
             'password' => 'required|min:8',
-            'role' => 'required|in:learner,tutor'
         ];
     }
+
+    // Tambahkan fungsi messages ini untuk men-translate peringatan error
+    public function messages(): array
+    {
+        return [
+            'fullName.required' => 'Nama lengkap wajib diisi.',
+            'email.required' => 'Email wajib diisi.',
+            'email.email' => 'Format email tidak valid.',
+            'email.unique' => 'Email ini sudah terdaftar.',
+            'email.starts_with' => 'Email mahasiswa harus diawali dengan angka 111.',
+            'email.ends_with' => 'Pendaftaran hanya diperbolehkan menggunakan email mahasiswa UDINUS (@mhs.dinus.ac.id).',
+            'password.required' => 'Password wajib diisi.',
+            'password.min' => 'Password minimal terdiri dari 8 karakter.',
+        ];
+    }
+
+
 }

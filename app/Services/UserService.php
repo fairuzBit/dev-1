@@ -20,7 +20,7 @@ class UserService
         ]);
 
         // 2. Pasang role menggunakan Spatie
-        $user->assignRole($data['role']);
+        $user->assignRole('learner');
 
         return $user;
     }

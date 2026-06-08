@@ -3,49 +3,42 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
-use App\Http\Requests\RegisterRequest; 
-use App\Http\Requests\LoginRequest;use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use App\Services\UserService;
+use App\Http\Requests\LoginRequest;
+use App\Http\Requests\RegisterRequest;
 use App\Http\Resources\UserResource;
-
+use App\Services\UserService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
     /**
-     * Summary of register
+     * Register
      * 
      * @unauthenticated
      */
-    public function register(RegisterRequest $request, UserService $userService) {
-        
-        
+    public function register(RegisterRequest $request, UserService $userService)
+    {
         $data = $request->validated();
-
-        
         $user = $userService->registerUser($data);
 
-        
         return response()->json([
             'message' => 'Registrasi Berhasil', 
             'user' => new UserResource($user)
-        ]);
+        ], 201); // 201 adalah standar HTTP untuk "Resource Created"
     }
 
     /**
-     * Summary of register
+     * Login
      * 
      * @unauthenticated
      */
-    public function login(LoginRequest $request) {
-        $credentials = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required'
-        ]);
+    public function login(LoginRequest $request)
+    {
+        // Validasi sepenuhnya ditangani oleh LoginRequest (Thin Controller)
+        $credentials = $request->validated();
+
         if ($token = Auth::guard('api')->attempt($credentials)) {
-            
-            
             // Kita bungkus Auth::user() menggunakan UserResource
             return response()->json([
                 'message' => 'Login Berhasil',
@@ -54,11 +47,33 @@ class AuthController extends Controller
                 'user' => new UserResource(Auth::guard('api')->user())
             ]);
         }
+        
         return response()->json(['message' => 'Email atau Password salah'], 401);
     }
-       public function getUser(\Illuminate\Http\Request $request) {
+
+    /**
+     * Get Current Logged In User
+     * 
+     * @authenticated
+     */
+    public function getUser(Request $request)
+    {
         return response()->json([
             'user' => new UserResource($request->user())
+        ]);
+    }
+
+    /**
+     * Logout / Invalidate Token
+     * 
+     * @authenticated
+     */
+    public function logout()
+    {
+        Auth::guard('api')->logout();
+
+        return response()->json([
+            'message' => 'Berhasil logout'
         ]);
     }
 }
