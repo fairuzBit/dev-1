@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use Dedoc\Scramble\Scramble;
+use Dedoc\Scramble\Support\Generator\OpenApi;
+use Dedoc\Scramble\Support\Generator\SecurityScheme;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
@@ -21,10 +24,17 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
-    public function boot(): void
-    {
-        $this->configureDefaults();
-    }
+   public function boot(): void
+   
+{
+     $this->configureDefaults();
+    Scramble::afterOpenApiGenerated(function (OpenApi $openApi) {
+        $openApi->secure(
+            SecurityScheme::http('bearer', 'JWT')
+        );
+    });
+}
+
 
     /**
      * Configure default behaviors for production-ready applications.

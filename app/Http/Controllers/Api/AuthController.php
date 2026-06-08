@@ -4,44 +4,61 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\RegisterRequest; 
+use App\Http\Requests\LoginRequest;use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Services\UserService;
+use App\Http\Resources\UserResource;
+
 
 class AuthController extends Controller
 {
-    public function register(Request $request) {
-        $request->validate([
-            'fullName' => 'required|string',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|min:6',
-            'role' => 'required'
-        ]);
+    /**
+     * Summary of register
+     * 
+     * @unauthenticated
+     */
+    public function register(RegisterRequest $request, UserService $userService) {
+        
+        
+        $data = $request->validated();
 
-        $user = User::create([
-            'name' => $request->fullName,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'role' => $request->role,
-            'university' => $request->university,
-            'prodi' => $request->prodi,
-            'nim' => $request->nim,
-        ]);
+        
+        $user = $userService->registerUser($data);
 
-        return response()->json(['message' => 'Registrasi Berhasil', 'user' => $user]);
+        
+        return response()->json([
+            'message' => 'Registrasi Berhasil', 
+            'user' => new UserResource($user)
+        ]);
     }
 
-    public function login(Request $request) {
+    /**
+     * Summary of register
+     * 
+     * @unauthenticated
+     */
+    public function login(LoginRequest $request) {
         $credentials = $request->validate([
             'email' => 'required|email',
             'password' => 'required'
         ]);
-
-        if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
-            return response()->json(['message' => 'Login Berhasil', 'user' => Auth::user()]);
+        if ($token = Auth::guard('api')->attempt($credentials)) {
+            
+            
+            // Kita bungkus Auth::user() menggunakan UserResource
+            return response()->json([
+                'message' => 'Login Berhasil',
+                'access_token' => $token,
+                'token_type' => 'bearer',
+                'user' => new UserResource(Auth::guard('api')->user())
+            ]);
         }
-
         return response()->json(['message' => 'Email atau Password salah'], 401);
+    }
+       public function getUser(\Illuminate\Http\Request $request) {
+        return response()->json([
+            'user' => new UserResource($request->user())
+        ]);
     }
 }
