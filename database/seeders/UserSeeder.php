@@ -22,7 +22,7 @@ class UserSeeder extends Seeder
         $admin->assignRole('admin');
 
         $tutor = \App\Models\User::firstOrCreate(
-            ['email' => 'tutor@mhs.dinus.ac.id'],
+            ['email' => '111tutor@mhs.dinus.ac.id'],
             [
                 'name' => 'Tutor User',
                 'password' => \Illuminate\Support\Facades\Hash::make('password'),
@@ -31,7 +31,7 @@ class UserSeeder extends Seeder
         $tutor->assignRole('tutor');
 
         $learner = \App\Models\User::firstOrCreate(
-            ['email' => 'learner@mhs.dinus.ac.id'],
+            ['email' => '111learner@mhs.dinus.ac.id'],
             [
                 'name' => 'Learner User',
                 'password' => \Illuminate\Support\Facades\Hash::make('password'),
