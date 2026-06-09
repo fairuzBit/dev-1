@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\Learner\ProfileController;
 use App\Http\Controllers\Api\Learner\DashboardController;
 use App\Http\Controllers\Api\Learner\BookingController;
 use App\Http\Controllers\Api\Learner\NotificationController;
+use App\Http\Controllers\Api\Tutor\TutorRegistrationController;
 
 
 
@@ -22,6 +23,9 @@ Route::middleware('auth:api')->group(function () {
     // Fitur User Terautentikasi
     Route::get('/user', [AuthController::class, 'getUser']);
     Route::post('/logout', [AuthController::class, 'logout']); 
+    
+    // Pendaftaran Tutor
+    Route::post('/register/tutor/upload-document', [TutorRegistrationController::class, 'uploadDocument']);
     
     // Master Data (Bisa diakses Learner & Tutor)
     Route::get('/courses', [MasterDataController::class, 'courses']);
