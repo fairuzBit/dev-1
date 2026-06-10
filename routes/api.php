@@ -8,6 +8,17 @@ use App\Http\Controllers\Api\Learner\DashboardController;
 use App\Http\Controllers\Api\Learner\BookingController;
 use App\Http\Controllers\Api\Learner\NotificationController;
 use App\Http\Controllers\Api\Tutor\TutorRegistrationController;
+use App\Http\Controllers\Api\Tutor\DashboardController as TutorDashboardController;
+use App\Http\Controllers\Api\Tutor\AvailabilityController;
+use App\Http\Controllers\Api\Tutor\BookingController as TutorBookingController;
+use App\Http\Controllers\Api\Tutor\ProfileController as TutorProfileController;
+use App\Http\Controllers\Api\Tutor\ReviewController;
+use App\Http\Controllers\Api\Tutor\NotificationController as TutorNotificationController;
+use App\Http\Controllers\Api\Admin\StatsController;
+use App\Http\Controllers\Api\Admin\UserController;
+use App\Http\Controllers\Api\Admin\ApplicationController;
+use App\Http\Controllers\Api\Admin\ComplaintController;
+use App\Http\Controllers\Api\Admin\MasterDataController as AdminMasterDataController;
 
 
 
@@ -52,4 +63,44 @@ Route::middleware('auth:api')->group(function () {
 
     });
     
+    // KHUSUS ROLE: TUTOR
+    Route::middleware('role:tutor')->group(function () {
+        Route::get('/tutor/dashboard', [TutorDashboardController::class, 'index']);
+        
+        Route::get('/tutor/availability', [AvailabilityController::class, 'index']);
+        Route::post('/tutor/availability', [AvailabilityController::class, 'store']);
+        
+        Route::get('/tutor/bookings', [TutorBookingController::class, 'index']);
+        Route::patch('/tutor/bookings/{id}/accept', [TutorBookingController::class, 'accept']);
+        Route::patch('/tutor/bookings/{id}/reject', [TutorBookingController::class, 'reject']);
+        
+        Route::get('/tutor/schedules', [TutorBookingController::class, 'schedules']);
+        Route::get('/tutor/history', [TutorBookingController::class, 'history']);
+        
+        Route::get('/tutor/reviews', [ReviewController::class, 'index']);
+        Route::get('/tutor/notifications', [TutorNotificationController::class, 'index']);
+        
+        Route::patch('/tutor/profile', [TutorProfileController::class, 'update']);
+    });
+    
+    // KHUSUS ROLE: ADMIN
+    Route::middleware('role:admin')->group(function () {
+        Route::get('/admin/stats', [StatsController::class, 'index']);
+        
+        Route::get('/admin/users', [UserController::class, 'index']);
+        Route::delete('/admin/users/{id}', [UserController::class, 'destroy']);
+        
+        Route::get('/admin/applications', [ApplicationController::class, 'index']);
+        Route::patch('/admin/applications/{id}/approve', [ApplicationController::class, 'approve']);
+        Route::patch('/admin/applications/{id}/reject', [ApplicationController::class, 'reject']);
+        
+        Route::get('/admin/complaints', [ComplaintController::class, 'index']);
+        
+        // CRUD Master Data
+        Route::post('/admin/courses', [AdminMasterDataController::class, 'storeCourse']);
+        Route::put('/admin/courses/{id}', [AdminMasterDataController::class, 'updateCourse']);
+        Route::delete('/admin/courses/{id}', [AdminMasterDataController::class, 'destroyCourse']);
+        Route::post('/admin/master-slots', [AdminMasterDataController::class, 'storeSlot']);
+        Route::delete('/admin/master-slots/{id}', [AdminMasterDataController::class, 'destroySlot']);
+    });
 });
