@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('tutors', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
+            $table->decimal('ipk', 3, 2)->nullable()->comment('Calculated via OCR');
             $table->text('bio')->nullable();
             $table->json('skills')->nullable();
             $table->float('rating_avg')->default(0);

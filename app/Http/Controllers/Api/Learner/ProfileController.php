@@ -8,7 +8,7 @@ use App\Services\Learner\ProfileService;
 use App\Http\Resources\UserResource;
 
 /**
- * @tags Learner - Profile
+ * @tags Learner Profile
  */
 class ProfileController extends Controller
 {
