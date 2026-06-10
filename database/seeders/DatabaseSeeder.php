@@ -18,6 +18,8 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             MasterSlotSeeder::class,
             TutorDiscoverySeeder::class,
+            TutorListSeeder::class,
+            TutorAvailabilitySeeder::class,
         ]);
     }
 

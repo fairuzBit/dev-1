@@ -18,6 +18,7 @@ class UserResource extends JsonResource
             'nim' => $this->nim,
             'phone' => $this->phone,
             'avatar' => $this->avatar,
+            'role' => $this->roles->first()->name ?? 'learner',
         ];
     }
 }
