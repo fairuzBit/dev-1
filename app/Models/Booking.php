@@ -15,8 +15,12 @@ class Booking extends Model
         'learner_id',
         'booking_date',
         'total_price',
+        'service_fee',
+        'grand_total',
         'status',
         'payment_status',
+        'payment_method',
+        'payment_code',
     ];
 
     // Relasi ke Tutor yang dibooking

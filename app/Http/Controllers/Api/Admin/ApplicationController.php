@@ -4,16 +4,23 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\TutorApplication;
+use App\Services\Admin\ApplicationService;
 
 /**
  * @tags Admin Applications
  */
 class ApplicationController extends Controller
 {
+    protected $applicationService;
+
+    public function __construct(ApplicationService $applicationService)
+    {
+        $this->applicationService = $applicationService;
+    }
+
     public function index()
     {
-        $applications = TutorApplication::with(['user', 'course'])->get();
+        $applications = $this->applicationService->getAllApplications();
 
         return response()->json([
             'data' => $applications->map(function ($app) {
@@ -31,14 +38,7 @@ class ApplicationController extends Controller
 
     public function approve(Request $request, $id)
     {
-        $app = TutorApplication::findOrFail($id);
-        $app->update([
-            'status' => 'approved',
-            'approved_by' => $request->user()->id,
-            'approved_at' => now()
-        ]);
-        
-        $app->user->assignRole('tutor');
+        $app = $this->applicationService->approveApplication($id, $request->user()->id);
 
         return response()->json([
             'message' => 'Tutor disetujui',
@@ -48,8 +48,7 @@ class ApplicationController extends Controller
 
     public function reject($id)
     {
-        $app = TutorApplication::findOrFail($id);
-        $app->update(['status' => 'rejected']);
+        $app = $this->applicationService->rejectApplication($id);
 
         return response()->json([
             'message' => 'Tutor ditolak',

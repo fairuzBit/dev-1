@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Api\Learner;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Services\Learner\BookingService;
+use App\Http\Requests\Learner\StoreBookingRequest;
+use App\Http\Requests\Learner\PayBookingRequest;
+use App\Http\Requests\Learner\SubmitReviewRequest;
 use App\Http\Resources\BookingResource;
 
 use Exception;
@@ -34,17 +37,8 @@ class BookingController extends Controller
     }
 
     // Endpoint: POST /api/learner/bookings
-    public function store(Request $request)
+    public function store(StoreBookingRequest $request)
     {
-        // Validasi input dari frontend
-        $request->validate([
-            'tutor_id' => 'required|exists:tutors,id',
-            'course_id' => 'required|exists:courses,id',
-            'booking_date' => 'required|date',
-            'slot_ids' => 'required|array',
-            'slot_ids.*' => 'exists:master_slots,id'
-        ]);
-
         try {
             $booking = $this->bookingService->createBooking($request->user()->id, $request->all());
             
@@ -99,12 +93,8 @@ class BookingController extends Controller
     }
 
     // Endpoint: PATCH /api/learner/bookings/{id}/pay
-    public function pay(Request $request, $id)
+    public function pay(PayBookingRequest $request, $id)
     {
-        $request->validate([
-            'payment_method' => 'required|string'
-        ]);
-
         try {
             $booking = $this->bookingService->payBooking($request->user()->id, $id, $request->payment_method);
             
@@ -141,13 +131,8 @@ class BookingController extends Controller
     }
 
     // Endpoint: POST /api/learner/bookings/{id}/reviews
-    public function submitReview(Request $request, $id)
+    public function submitReview(SubmitReviewRequest $request, $id)
     {
-        $request->validate([
-            'rating' => 'required|integer|min:1|max:5',
-            'comment' => 'nullable|string'
-        ]);
-
         try {
             $review = $this->bookingService->submitReview($request->user()->id, $id, $request->all());
             

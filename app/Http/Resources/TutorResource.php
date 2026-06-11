@@ -26,6 +26,7 @@ class TutorResource extends JsonResource
                 return $this->courses->map(function ($tutorCourse) {
                     return [
                         'tutor_course_id' => $tutorCourse->id, 
+                        'course_id' => $tutorCourse->course_id,
                         'course_name' => $tutorCourse->course->name,
                         'course_code' => $tutorCourse->course->code,
                         'grade' => $tutorCourse->grade,
@@ -37,6 +38,7 @@ class TutorResource extends JsonResource
                 return $this->availabilitySlots->map(function ($avail) {
                     return [
                         'availability_id' => $avail->id,
+                        'slot_id' => $avail->slot_id,
                         'day_of_week' => $avail->day_of_week,
                         'start_time' => date('H:i', strtotime($avail->slot->start_time ?? '')),
                         'end_time' => date('H:i', strtotime($avail->slot->end_time ?? '')),

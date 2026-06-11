@@ -4,18 +4,23 @@ namespace App\Http\Controllers\Api\Tutor;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Notification;
+use App\Services\Tutor\NotificationService;
 
 /**
  * @tags Tutor Notification
  */
 class NotificationController extends Controller
 {
+    protected $notificationService;
+
+    public function __construct(NotificationService $notificationService)
+    {
+        $this->notificationService = $notificationService;
+    }
+
     public function index(Request $request)
     {
-        $notifications = Notification::where('user_id', $request->user()->id)
-            ->orderBy('created_at', 'desc')
-            ->get();
+        $notifications = $this->notificationService->getNotifications($request->user()->id);
 
         return response()->json([
             'data' => $notifications->map(function ($notif) {
