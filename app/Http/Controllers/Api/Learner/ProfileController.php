@@ -36,7 +36,12 @@ class ProfileController extends Controller
     public function update(UpdateProfileRequest $request)
     {
 
-        $user = $this->profileService->updateProfile($request->user()->id, $request->only(['name', 'nim', 'email', 'phone']));
+        $data = $request->validated();
+        if ($request->hasFile('avatar')) {
+            $data['avatar'] = $request->file('avatar')->store('avatars', 'public');
+        }
+
+        $user = $this->profileService->updateProfile($request->user()->id, $data);
 
         return response()->json([
             'success' => true,

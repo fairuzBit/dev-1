@@ -18,6 +18,7 @@ class UpdateProfileRequest extends FormRequest
             'nim' => 'nullable|string|max:50|unique:users,nim,' . $this->user()->id,
             'email' => 'nullable|email|unique:users,email,' . $this->user()->id,
             'phone' => 'nullable|string|max:20',
+            'avatar' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ];
     }
 }

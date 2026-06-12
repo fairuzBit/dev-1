@@ -20,7 +20,8 @@ class DatabaseSeeder extends Seeder
             TutorDiscoverySeeder::class,
             TutorListSeeder::class,
             TutorAvailabilitySeeder::class,
+            TutorApplicationSeeder::class,
+            BookingSeeder::class,
         ]);
     }
-
 }
