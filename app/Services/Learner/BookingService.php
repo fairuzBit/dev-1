@@ -37,7 +37,8 @@ class BookingService
                 'service_fee' => $serviceFee,
                 'grand_total' => $grandTotal,
                 'status' => 'pending',
-                'payment_status' => 'unpaid'
+                'payment_status' => 'unpaid',
+                'payment_expired_at' => now()->addMinutes(15)
             ]);
 
             // 2. Masukkan Rincian Slot dan Cek Jadwal Bentrok
@@ -134,6 +135,11 @@ class BookingService
             ->where('payment_status', 'unpaid')
             ->firstOrFail();
 
+        if ($booking->payment_expired_at && now()->greaterThan($booking->payment_expired_at)) {
+            $booking->update(['status' => 'cancelled']);
+            throw new Exception("Batas waktu pembayaran telah habis. Pesanan otomatis dibatalkan.");
+        }
+
         // Generate Nomor VA palsu (Contoh: 8878 + Nomor HP acak / Timestamp)
         $paymentCode = '8878' . rand(10000000, 99999999);
 
@@ -154,6 +160,11 @@ class BookingService
         $booking = Booking::where('learner_id', $learnerId)
             ->where('id', $bookingId)
             ->firstOrFail();
+
+        if ($booking->payment_expired_at && now()->greaterThan($booking->payment_expired_at)) {
+            $booking->update(['status' => 'cancelled']);
+            throw new Exception("Batas waktu pembayaran telah habis. Pesanan otomatis dibatalkan.");
+        }
 
         $booking->update([
             'payment_status' => 'paid'

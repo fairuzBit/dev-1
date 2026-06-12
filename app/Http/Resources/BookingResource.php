@@ -19,6 +19,7 @@ class BookingResource extends JsonResource
             'payment_status' => $this->payment_status,
             'payment_method' => $this->payment_method,
             'payment_code' => $this->payment_code,
+            'payment_expired_at' => $this->payment_expired_at ? $this->payment_expired_at->toIso8601String() : null,
             
             // Relasi ke Tutor (Memanggil resource Tutor yang sudah Bos punya)
             'tutor' => new TutorResource($this->whenLoaded('tutor')),
