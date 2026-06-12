@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Learner;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Requests\Learner\UpdateProfileRequest;
 use App\Services\Learner\ProfileService;
 use App\Http\Resources\UserResource;
 
@@ -32,15 +33,8 @@ class ProfileController extends Controller
         ]);
     }
 
-    public function update(Request $request)
+    public function update(UpdateProfileRequest $request)
     {
-        $request->validate([
-            'name' => 'nullable|string|max:255',
-            'nim' => 'nullable|string|max:50|unique:users,nim,' . $request->user()->id,
-            'email' => 'nullable|email|unique:users,email,' . $request->user()->id,
-            'phone' => 'nullable|string|max:20',
-            // avatar dikosongkan dulu atau tambah image rule jika ada file upload
-        ]);
 
         $user = $this->profileService->updateProfile($request->user()->id, $request->only(['name', 'nim', 'email', 'phone']));
 

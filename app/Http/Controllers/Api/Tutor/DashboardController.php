@@ -4,13 +4,20 @@ namespace App\Http\Controllers\Api\Tutor;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Booking;
+use App\Services\Tutor\DashboardService;
 
 /**
  * @tags Tutor Dashboard
  */
 class DashboardController extends Controller
 {
+    protected $dashboardService;
+
+    public function __construct(DashboardService $dashboardService)
+    {
+        $this->dashboardService = $dashboardService;
+    }
+
     /**
      * Get Tutor Dashboard Stats
      */
@@ -22,16 +29,12 @@ class DashboardController extends Controller
             return response()->json(['message' => 'Anda bukan tutor'], 403);
         }
 
-        $totalSessions = Booking::where('tutor_id', $tutorId)->where('status', 'completed')->count();
-        $totalEarnings = Booking::where('tutor_id', $tutorId)->where('status', 'completed')->sum('total_price');
         $rating = $request->user()->tutor->rating_avg ?? 0;
 
+        $stats = $this->dashboardService->getStats($tutorId, $rating);
+
         return response()->json([
-            'data' => [
-                'total_earnings' => (int) $totalEarnings,
-                'total_sessions' => $totalSessions,
-                'rating' => (float) $rating,
-            ]
+            'data' => $stats
         ]);
     }
 }

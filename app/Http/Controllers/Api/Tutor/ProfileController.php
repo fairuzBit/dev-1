@@ -4,16 +4,24 @@ namespace App\Http\Controllers\Api\Tutor;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Services\Tutor\TutorProfileService;
+use App\Http\Requests\Tutor\UpdateProfileRequest;
 
 /**
  * @tags Tutor Profile
  */
 class ProfileController extends Controller
 {
+    protected $profileService;
+
+    public function __construct(TutorProfileService $profileService)
+    {
+        $this->profileService = $profileService;
+    }
     /**
      * Update Tutor Profile
      */
-    public function update(Request $request)
+    public function update(UpdateProfileRequest $request)
     {
         $user = $request->user();
         $tutor = $user->tutor;
@@ -22,17 +30,11 @@ class ProfileController extends Controller
             return response()->json(['message' => 'Anda bukan tutor'], 403);
         }
 
-        $validated = $request->validate([
-            'bio' => 'nullable|string',
-            'skills' => 'nullable|array',
-            'price' => 'nullable|numeric'
-        ]);
-
-        $tutor->update($validated);
+        $tutor = $this->profileService->updateProfile($tutor, $request->validated());
 
         return response()->json([
             'message' => 'Profil tutor diperbarui',
-            'data' => $tutor
+            'data' => new \App\Http\Resources\Tutor\TutorProfileResource($tutor)
         ]);
     }
 }

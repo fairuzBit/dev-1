@@ -4,26 +4,29 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Course;
-use App\Models\MasterSlot;
+use App\Http\Requests\Admin\StoreCourseRequest;
+use App\Http\Requests\Admin\UpdateCourseRequest;
+use App\Http\Requests\Admin\StoreMasterSlotRequest;
+use App\Services\Admin\MasterDataService;
 
 /**
  * @tags Admin Master Data
  */
 class MasterDataController extends Controller
 {
+    protected $masterDataService;
+
+    public function __construct(MasterDataService $masterDataService)
+    {
+        $this->masterDataService = $masterDataService;
+    }
     // ==========================================
     // CRUD UNTUK COURSE (MATA KULIAH)
     // ==========================================
 
-    public function storeCourse(Request $request)
+    public function storeCourse(StoreCourseRequest $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'category' => 'required|string|max:255'
-        ]);
-
-        $course = Course::create($validated);
+        $course = $this->masterDataService->storeCourse($request->validated());
 
         return response()->json([
             'message' => 'Mata Kuliah berhasil ditambahkan',
@@ -31,16 +34,9 @@ class MasterDataController extends Controller
         ]);
     }
 
-    public function updateCourse(Request $request, $id)
+    public function updateCourse(UpdateCourseRequest $request, $id)
     {
-        $course = Course::findOrFail($id);
-        
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'category' => 'required|string|max:255'
-        ]);
-
-        $course->update($validated);
+        $course = $this->masterDataService->updateCourse($id, $request->validated());
 
         return response()->json([
             'message' => 'Mata Kuliah berhasil diperbarui',
@@ -50,8 +46,7 @@ class MasterDataController extends Controller
 
     public function destroyCourse($id)
     {
-        $course = Course::findOrFail($id);
-        $course->delete();
+        $this->masterDataService->destroyCourse($id);
 
         return response()->json([
             'message' => 'Mata Kuliah berhasil dihapus'
@@ -62,13 +57,9 @@ class MasterDataController extends Controller
     // CRUD UNTUK MASTER SLOT (JAM KETERSEDIAAN)
     // ==========================================
 
-    public function storeSlot(Request $request)
+    public function storeSlot(StoreMasterSlotRequest $request)
     {
-        $validated = $request->validate([
-            'time_range' => 'required|string|max:50'
-        ]);
-
-        $slot = MasterSlot::create($validated);
+        $slot = $this->masterDataService->storeSlot($request->validated());
 
         return response()->json([
             'message' => 'Master Slot berhasil ditambahkan',
@@ -78,8 +69,7 @@ class MasterDataController extends Controller
 
     public function destroySlot($id)
     {
-        $slot = MasterSlot::findOrFail($id);
-        $slot->delete();
+        $this->masterDataService->destroySlot($id);
 
         return response()->json([
             'message' => 'Master Slot berhasil dihapus'

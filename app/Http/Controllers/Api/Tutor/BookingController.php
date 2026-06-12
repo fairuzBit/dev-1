@@ -4,13 +4,20 @@ namespace App\Http\Controllers\Api\Tutor;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Booking;
+use App\Services\Tutor\BookingService;
 
 /**
  * @tags Tutor Booking
  */
 class BookingController extends Controller
 {
+    protected $bookingService;
+
+    public function __construct(BookingService $bookingService)
+    {
+        $this->bookingService = $bookingService;
+    }
+
     /**
      * Get bookings for tutor
      */
@@ -22,10 +29,7 @@ class BookingController extends Controller
             return response()->json(['message' => 'Anda bukan tutor'], 403);
         }
 
-        $bookings = Booking::with(['user', 'bookingSlots.masterSlot'])
-            ->where('tutor_id', $tutorId)
-            ->whereIn('status', ['pending', 'paid'])
-            ->get();
+        $bookings = $this->bookingService->getPendingBookings($tutorId);
 
         return response()->json([
             'data' => $bookings->map(function ($b) {
@@ -46,11 +50,7 @@ class BookingController extends Controller
         $tutorId = $request->user()->tutor->id ?? null;
         if (!$tutorId) return response()->json(['message' => 'Anda bukan tutor'], 403);
 
-        $schedules = Booking::with(['user', 'bookingSlots.masterSlot'])
-            ->where('tutor_id', $tutorId)
-            ->where('status', 'accepted')
-            ->where('date', '>=', now()->toDateString())
-            ->get();
+        $schedules = $this->bookingService->getSchedules($tutorId);
 
         return response()->json(['data' => $schedules]);
     }
@@ -60,10 +60,7 @@ class BookingController extends Controller
         $tutorId = $request->user()->tutor->id ?? null;
         if (!$tutorId) return response()->json(['message' => 'Anda bukan tutor'], 403);
 
-        $history = Booking::with('user')
-            ->where('tutor_id', $tutorId)
-            ->whereIn('status', ['completed', 'rejected', 'cancelled'])
-            ->get();
+        $history = $this->bookingService->getHistory($tutorId);
 
         return response()->json(['data' => $history]);
     }
@@ -73,9 +70,7 @@ class BookingController extends Controller
         $tutorId = $request->user()->tutor->id ?? null;
         if (!$tutorId) return response()->json(['message' => 'Anda bukan tutor'], 403);
 
-        $booking = Booking::where('id', $id)->where('tutor_id', $tutorId)->firstOrFail();
-        
-        $booking->update(['status' => 'accepted']);
+        $booking = $this->bookingService->acceptBooking($tutorId, $id);
 
         return response()->json([
             'message' => 'Pesanan diterima',
@@ -88,9 +83,7 @@ class BookingController extends Controller
         $tutorId = $request->user()->tutor->id ?? null;
         if (!$tutorId) return response()->json(['message' => 'Anda bukan tutor'], 403);
 
-        $booking = Booking::where('id', $id)->where('tutor_id', $tutorId)->firstOrFail();
-        
-        $booking->update(['status' => 'rejected']);
+        $booking = $this->bookingService->rejectBooking($tutorId, $id);
 
         return response()->json([
             'message' => 'Pesanan ditolak',

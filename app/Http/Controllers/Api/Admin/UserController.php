@@ -4,16 +4,23 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\User;
+use App\Services\Admin\UserService;
 
 /**
  * @tags Admin Users
  */
 class UserController extends Controller
 {
+    protected $userService;
+
+    public function __construct(UserService $userService)
+    {
+        $this->userService = $userService;
+    }
+
     public function index()
     {
-        $users = User::with('roles')->get();
+        $users = $this->userService->getAllUsers();
 
         return response()->json([
             'data' => $users->map(function ($user) {
@@ -30,8 +37,7 @@ class UserController extends Controller
 
     public function destroy($id)
     {
-        $user = User::findOrFail($id);
-        $user->delete();
+        $this->userService->destroyUser($id);
 
         return response()->json(['message' => 'Pengguna berhasil diblokir/dihapus']);
     }

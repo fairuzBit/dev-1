@@ -4,13 +4,20 @@ namespace App\Http\Controllers\Api\Tutor;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Review;
+use App\Services\Tutor\ReviewService;
 
 /**
  * @tags Tutor Review
  */
 class ReviewController extends Controller
 {
+    protected $reviewService;
+
+    public function __construct(ReviewService $reviewService)
+    {
+        $this->reviewService = $reviewService;
+    }
+
     public function index(Request $request)
     {
         $tutorId = $request->user()->tutor->id ?? null;
@@ -19,9 +26,7 @@ class ReviewController extends Controller
             return response()->json(['message' => 'Anda bukan tutor'], 403);
         }
 
-        $reviews = Review::with('user')
-            ->where('tutor_id', $tutorId)
-            ->get();
+        $reviews = $this->reviewService->getReviews($tutorId);
 
         return response()->json([
             'data' => $reviews->map(function ($review) {
