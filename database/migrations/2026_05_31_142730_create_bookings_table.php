@@ -31,6 +31,7 @@ return new class extends Migration
             $table->enum('payment_status', ['unpaid', 'paid', 'refunded'])->default('unpaid');
             $table->string('payment_method')->nullable(); // bank_transfer, e_wallet, cash
             $table->string('payment_code')->nullable(); // Nomor VA atau kode bayar
+            $table->timestamp('payment_expired_at')->nullable(); // Waktu kadaluarsa pembayaran
             
             $table->timestamps();
         });

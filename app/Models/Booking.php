@@ -21,6 +21,12 @@ class Booking extends Model
         'payment_status',
         'payment_method',
         'payment_code',
+        'payment_expired_at',
+    ];
+
+    protected $casts = [
+        'payment_expired_at' => 'datetime',
+        'booking_date' => 'date',
     ];
 
     // Relasi ke Tutor yang dibooking
