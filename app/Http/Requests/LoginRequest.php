@@ -24,7 +24,7 @@ class LoginRequest extends FormRequest
     {
         return [
             // Samakan aturan emailnya dengan register
-            'email'    => 'required|email|starts_with:111|ends_with:@mhs.dinus.ac.id',
+            'email'    => 'required|email',
             'password' => 'required'
         ];
     }
