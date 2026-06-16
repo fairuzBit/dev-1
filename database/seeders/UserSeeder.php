@@ -12,31 +12,34 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
+        // 1 Admin
         $admin = \App\Models\User::firstOrCreate(
             ['email' => 'admin@mhs.dinus.ac.id'],
             [
-                'name' => 'Admin User',
+                'name' => 'Admin Utama',
                 'password' => \Illuminate\Support\Facades\Hash::make('password'),
+                'email_verified_at' => now(),
             ]
         );
         $admin->assignRole('admin');
 
-        $tutor = \App\Models\User::firstOrCreate(
-            ['email' => '111tutor@mhs.dinus.ac.id'],
-            [
-                'name' => 'Tutor User',
-                'password' => \Illuminate\Support\Facades\Hash::make('password'),
-            ]
-        );
-        $tutor->assignRole('tutor');
+        // 3 Tutor
+        $tutors = \App\Models\User::factory()->count(3)->create();
+        foreach ($tutors as $index => $tutor) {
+            $tutor->assignRole('tutor');
+            
+            // Buat satu tutor di-suspend
+            if ($index === 1) {
+                $tutor->update([
+                    'suspended_until' => now()->addDays(7)
+                ]);
+            }
+        }
 
-        $learner = \App\Models\User::firstOrCreate(
-            ['email' => '111learner@mhs.dinus.ac.id'],
-            [
-                'name' => 'Learner User',
-                'password' => \Illuminate\Support\Facades\Hash::make('password'),
-            ]
-        );
-        $learner->assignRole('learner');
+        // 3 Learner
+        $learners = \App\Models\User::factory()->count(3)->create();
+        foreach ($learners as $learner) {
+            $learner->assignRole('learner');
+        }
     }
 }
