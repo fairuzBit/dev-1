@@ -21,9 +21,11 @@ class BookingSeeder extends Seeder
             $learner->assignRole('learner');
         }
 
-        $tutorUser = User::role('tutor')->first();
-        $tutor = Tutor::where('user_id', $tutorUser->id)->first();
-        
+        $tutor = Tutor::first();
+        if (!$tutor) {
+            $tutorUser = User::role('tutor')->first();
+            $tutor = Tutor::create(['user_id' => $tutorUser->id, 'ipk' => 3.8, 'price' => 50000]);
+        }
         $masterSlots = MasterSlot::take(3)->get(); // Ambil 3 slot pertama
         
         // 1. Booking Selesai & Di-review
@@ -93,6 +95,26 @@ class BookingSeeder extends Seeder
         
         BookingSlot::create([
             'booking_id' => $bookingPending->id,
+            'slot_id' => $masterSlots->last()->id,
+            'start_time' => $masterSlots->last()->start_time,
+            'end_time' => $masterSlots->last()->end_time
+        ]);
+        
+        // 4. Booking Menunggu Pembayaran
+        $bookingUnpaid = Booking::create([
+            'learner_id' => $learner->id,
+            'tutor_id' => $tutor->id,
+            'course_id' => 1,
+            'booking_date' => Carbon::now()->addDays(3)->toDateString(),
+            'status' => 'pending',
+            'payment_status' => 'unpaid',
+            'total_price' => $tutor->price,
+            'service_fee' => 5000,
+            'grand_total' => $tutor->price + 5000,
+        ]);
+        
+        BookingSlot::create([
+            'booking_id' => $bookingUnpaid->id,
             'slot_id' => $masterSlots->last()->id,
             'start_time' => $masterSlots->last()->start_time,
             'end_time' => $masterSlots->last()->end_time

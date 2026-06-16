@@ -17,8 +17,9 @@ use App\Http\Controllers\Api\Tutor\NotificationController as TutorNotificationCo
 use App\Http\Controllers\Api\Admin\StatsController;
 use App\Http\Controllers\Api\Admin\UserController;
 use App\Http\Controllers\Api\Admin\ApplicationController;
-use App\Http\Controllers\Api\Admin\ComplaintController;
 use App\Http\Controllers\Api\Admin\MasterDataController as AdminMasterDataController;
+use App\Http\Controllers\Api\Admin\PaymentController;
+use App\Http\Controllers\Api\Admin\ModerationController;
 
 
 
@@ -48,6 +49,7 @@ Route::middleware('auth:api')->group(function () {
         Route::get('/tutors/{id}', [TutorDiscoveryController::class, 'show']);
         Route::get('/me', [ProfileController::class, 'me']);
         Route::patch('/me', [ProfileController::class, 'update']);
+        Route::get('/me/tutor-application-status', [ProfileController::class, 'tutorApplicationStatus']);
         Route::get('/dashboard', [DashboardController::class, 'index']);
         Route::get('/dashboard/stats', [DashboardController::class, 'stats']);
         Route::get('/learner/bookings', [BookingController::class, 'index']); // Menu Detail Pesanan
@@ -85,16 +87,25 @@ Route::middleware('auth:api')->group(function () {
     
     // KHUSUS ROLE: ADMIN
     Route::middleware('role:admin')->group(function () {
-        Route::get('/admin/stats', [StatsController::class, 'index']);
-        
+        // User Management (Suspend/Unsuspend)
         Route::get('/admin/users', [UserController::class, 'index']);
         Route::delete('/admin/users/{id}', [UserController::class, 'destroy']);
+        Route::patch('/admin/users/{id}/suspend', [UserController::class, 'suspend']);
+        Route::patch('/admin/users/{id}/unsuspend', [UserController::class, 'unsuspend']);
         
         Route::get('/admin/applications', [ApplicationController::class, 'index']);
         Route::patch('/admin/applications/{id}/approve', [ApplicationController::class, 'approve']);
         Route::patch('/admin/applications/{id}/reject', [ApplicationController::class, 'reject']);
         
-        Route::get('/admin/complaints', [ComplaintController::class, 'index']);
+        // Moderation
+        Route::get('/admin/moderation/reviews', [ModerationController::class, 'reviews']);
+        Route::delete('/admin/moderation/reviews/{id}', [ModerationController::class, 'destroyReview']);
+        Route::patch('/admin/moderation/reviews/{id}/process', [ModerationController::class, 'processReview']);
+        Route::patch('/admin/moderation/reviews/{id}/resolve', [ModerationController::class, 'resolveReview']);
+
+        // Payments
+        Route::get('/admin/payments', [PaymentController::class, 'index']);
+        Route::patch('/admin/payments/{id}/approve', [PaymentController::class, 'approve']);
         
         // CRUD Master Data
         Route::post('/admin/courses', [AdminMasterDataController::class, 'storeCourse']);

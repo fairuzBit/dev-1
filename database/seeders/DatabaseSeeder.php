@@ -16,12 +16,15 @@ class DatabaseSeeder extends Seeder
         $this->call([
             RoleSeeder::class,
             UserSeeder::class,
+            CourseSeeder::class, // (Mata Kuliah & Keahlian)
             MasterSlotSeeder::class,
             TutorDiscoverySeeder::class,
             TutorListSeeder::class,
             TutorAvailabilitySeeder::class,
             TutorApplicationSeeder::class,
             BookingSeeder::class,
+            ReviewSeeder::class,
+            NotificationSeeder::class,
         ]);
     }
 }
