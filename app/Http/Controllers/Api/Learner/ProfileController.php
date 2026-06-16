@@ -49,4 +49,17 @@ class ProfileController extends Controller
             'data' => new UserResource($user)
         ]);
     }
+
+    public function tutorApplicationStatus(Request $request)
+    {
+        $status = $this->profileService->tutorApplicationStatus($request->user()->id);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Status pendaftaran tutor berhasil diambil',
+            'data' => [
+                'status' => $status
+            ]
+        ]);
+    }
 }

@@ -41,4 +41,27 @@ class UserController extends Controller
 
         return response()->json(['message' => 'Pengguna berhasil diblokir/dihapus']);
     }
+
+    public function suspend(\App\Http\Requests\Admin\SuspendUserRequest $request, $id)
+    {
+        $duration = $request->validated('duration');
+        $user = $this->userService->suspendUser($id, $duration);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Pengguna berhasil disuspend',
+            'data' => $user
+        ]);
+    }
+
+    public function unsuspend($id)
+    {
+        $user = $this->userService->unsuspendUser($id);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Suspend pengguna berhasil dicabut',
+            'data' => $user
+        ]);
+    }
 }
