@@ -18,7 +18,6 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             CourseSeeder::class, // (Mata Kuliah & Keahlian)
             MasterSlotSeeder::class,
-            TutorDiscoverySeeder::class,
             TutorListSeeder::class,
             TutorAvailabilitySeeder::class,
             TutorApplicationSeeder::class,

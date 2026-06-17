@@ -4,30 +4,26 @@ namespace Database\Seeders;
 
 use App\Models\AvailabilitySlot;
 use App\Models\MasterSlot;
-use App\Models\User;
+use App\Models\Tutor;
 use Illuminate\Database\Seeder;
 
 class TutorAvailabilitySeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        // Cari user Budi Santoso
-        $tutorUser = User::where('email', '111tutor2@mhs.dinus.ac.id')->first();
+        $tutors = Tutor::all();
+        $masterSlots = MasterSlot::take(5)->get(); // Ambil 5 slot pertama
+        $daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 
-        if ($tutorUser && $tutorUser->tutor) {
-            $tutorId = $tutorUser->tutor->id;
-            $masterSlots = MasterSlot::all();
+        foreach ($tutors as $index => $tutor) {
+            // Tutor ke-1 (genap) ngajar Senin-Rabu, Tutor ganjil ngajar Kamis-Jumat
+            $assignedDays = ($index % 2 == 0) ? ['Monday', 'Tuesday', 'Wednesday'] : ['Thursday', 'Friday'];
             
-            // Kita set Budi Santoso available dari Senin sampai Jumat
-            $daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
-
-            foreach ($daysOfWeek as $day) {
-                foreach ($masterSlots as $slot) {
+            foreach ($assignedDays as $day) {
+                // Beri mereka 3 slot per hari
+                foreach ($masterSlots->take(3) as $slot) {
                     AvailabilitySlot::firstOrCreate([
-                        'tutor_id' => $tutorId,
+                        'tutor_id' => $tutor->id,
                         'day_of_week' => $day,
                         'slot_id' => $slot->id,
                     ], [

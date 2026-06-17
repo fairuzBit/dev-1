@@ -15,30 +15,27 @@ class BookingSeeder extends Seeder
 {
     public function run(): void
     {
-        $learner = User::role('learner')->first();
-        if (!$learner) {
-            $learner = User::factory()->create(['name' => 'Learner Prototype', 'email' => 'learnerproto@example.com']);
-            $learner->assignRole('learner');
-        }
+        $learner8 = User::where('email', 'learner8@mhs.dinus.ac.id')->first();
+        $learner9 = User::where('email', 'learner9@mhs.dinus.ac.id')->first();
+        $learner10 = User::where('email', 'learner10@mhs.dinus.ac.id')->first();
 
-        $tutor = Tutor::first();
-        if (!$tutor) {
-            $tutorUser = User::role('tutor')->first();
-            $tutor = Tutor::create(['user_id' => $tutorUser->id, 'ipk' => 3.8, 'price' => 50000]);
-        }
-        $masterSlots = MasterSlot::take(3)->get(); // Ambil 3 slot pertama
+        $tutors = Tutor::take(3)->get(); // Ambil 3 tutor pertama
+        $masterSlots = MasterSlot::take(3)->get(); 
         
-        // 1. Booking Selesai & Di-review
+        if (!$learner8 || $tutors->isEmpty()) return;
+
+        // 1. Booking Selesai & Di-review (Oleh Learner 8 ke Tutor 1)
+        $tutor1 = $tutors[0];
         $bookingCompleted = Booking::create([
-            'learner_id' => $learner->id,
-            'tutor_id' => $tutor->id,
-            'course_id' => 1,
+            'learner_id' => $learner8->id,
+            'tutor_id' => $tutor1->id,
+            'course_id' => $tutor1->courses->first()->course_id ?? 1,
             'booking_date' => Carbon::yesterday()->toDateString(),
             'status' => 'completed',
             'payment_status' => 'paid',
-            'total_price' => $tutor->price,
+            'total_price' => $tutor1->price,
             'service_fee' => 5000,
-            'grand_total' => $tutor->price + 5000,
+            'grand_total' => $tutor1->price + 5000,
             'payment_method' => 'bank_transfer',
             'payment_code' => 'PAY-COMPLETED-123'
         ]);
@@ -51,25 +48,19 @@ class BookingSeeder extends Seeder
                 'end_time' => $slot->end_time
             ]);
         }
-        
-        // Review untuk booking yang selesai
-        Review::create([
-            'booking_id' => $bookingCompleted->id,
-            'rating' => 5,
-            'comment' => 'Tutornya sangat pintar dan menjelaskan dengan sangat jelas! Sangat direkomendasikan.',
-        ]);
 
-        // 2. Booking Aktif (Sudah Dibayar, Tinggal Mulai)
+        // 2. Booking Aktif / Accepted (Oleh Learner 9 ke Tutor 2)
+        $tutor2 = $tutors[1];
         $bookingPaid = Booking::create([
-            'learner_id' => $learner->id,
-            'tutor_id' => $tutor->id,
-            'course_id' => 1,
+            'learner_id' => $learner9->id,
+            'tutor_id' => $tutor2->id,
+            'course_id' => $tutor2->courses->first()->course_id ?? 1,
             'booking_date' => Carbon::tomorrow()->toDateString(),
             'status' => 'accepted',
             'payment_status' => 'paid',
-            'total_price' => $tutor->price,
+            'total_price' => $tutor2->price,
             'service_fee' => 5000,
-            'grand_total' => $tutor->price + 5000,
+            'grand_total' => $tutor2->price + 5000,
             'payment_method' => 'ewallet',
             'payment_code' => 'PAY-PAID-456'
         ]);
@@ -81,16 +72,20 @@ class BookingSeeder extends Seeder
             'end_time' => $masterSlots->first()->end_time
         ]);
 
-        // 3. Booking Menunggu Persetujuan Tutor
+        // 3. Booking Menunggu Persetujuan Tutor / Pending Paid (Oleh Learner 10 ke Tutor 3)
+        $tutor3 = $tutors[2];
         $bookingPending = Booking::create([
-            'learner_id' => $learner->id,
-            'tutor_id' => $tutor->id,
-            'course_id' => 1,
+            'learner_id' => $learner10->id,
+            'tutor_id' => $tutor3->id,
+            'course_id' => $tutor3->courses->first()->course_id ?? 1,
             'booking_date' => Carbon::now()->addDays(2)->toDateString(),
             'status' => 'pending',
-            'total_price' => $tutor->price,
+            'payment_status' => 'paid',
+            'total_price' => $tutor3->price,
             'service_fee' => 5000,
-            'grand_total' => $tutor->price + 5000,
+            'grand_total' => $tutor3->price + 5000,
+            'payment_method' => 'qris',
+            'payment_code' => 'PAY-PENDING-789'
         ]);
         
         BookingSlot::create([
@@ -100,17 +95,17 @@ class BookingSeeder extends Seeder
             'end_time' => $masterSlots->last()->end_time
         ]);
         
-        // 4. Booking Menunggu Pembayaran
+        // 4. Booking Unpaid (Oleh Learner 8 ke Tutor 2)
         $bookingUnpaid = Booking::create([
-            'learner_id' => $learner->id,
-            'tutor_id' => $tutor->id,
-            'course_id' => 1,
+            'learner_id' => $learner8->id,
+            'tutor_id' => $tutor2->id,
+            'course_id' => $tutor2->courses->first()->course_id ?? 1,
             'booking_date' => Carbon::now()->addDays(3)->toDateString(),
             'status' => 'pending',
             'payment_status' => 'unpaid',
-            'total_price' => $tutor->price,
+            'total_price' => $tutor2->price,
             'service_fee' => 5000,
-            'grand_total' => $tutor->price + 5000,
+            'grand_total' => $tutor2->price + 5000,
         ]);
         
         BookingSlot::create([
@@ -119,8 +114,5 @@ class BookingSeeder extends Seeder
             'start_time' => $masterSlots->last()->start_time,
             'end_time' => $masterSlots->last()->end_time
         ]);
-        
-        // Update rating tutor
-        $tutor->update(['rating_avg' => 5.0]);
     }
 }
