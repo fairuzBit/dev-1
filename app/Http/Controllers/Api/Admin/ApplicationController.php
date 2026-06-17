@@ -33,11 +33,10 @@ class ApplicationController extends Controller
                     'status' => $app->status,
                     'created_at' => $app->created_at->format('d M Y'),
                     'documents' => [
-                        ['type' => 'file', 'name' => 'KHS.pdf', 'label' => 'Transkrip Nilai', 'url' => asset('storage/' . $app->transcript_file)],
-                        ['type' => 'link', 'value' => $app->portfolio_link, 'label' => 'Portofolio'],
+                        ['type' => 'file', 'name' => 'Transkrip_KHS.pdf', 'label' => 'Transkrip Nilai', 'url' => asset('storage/' . $app->transcript_file)],
                     ],
-                    'matkul' => $app->courses ? $app->courses->pluck('name') : [],
-                    'keahlian' => $app->skills ? $app->skills->pluck('name') : [],
+                    'matkul' => $app->course ? [$app->course->name] : [],
+                    'keahlian' => [],
                 ];
             })
         ]);
