@@ -14,13 +14,10 @@ class PaymentService
     public function approvePayment(int $id)
     {
         $booking = Booking::findOrFail($id);
-        
-        // Asumsi kolom status atau payment_status ada di tabel bookings.
-        // Di kebutuhan.md dibilang "Mengubah status pembayaran dari Unpaid/Pending menjadi Paid/Selesai"
         $booking->update([
-            'status' => 'Selesai' // atau sesuai enum yang dipakai
+            'status' => 'accepted', 
+            'payment_status' => 'paid'
         ]);
-
         return $booking;
     }
 }

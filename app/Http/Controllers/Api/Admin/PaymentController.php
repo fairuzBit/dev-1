@@ -37,7 +37,7 @@ class PaymentController extends Controller
                     'learner' => $payment->learner->name ?? 'Unknown',
                     'tutor' => $payment->tutor->user->name ?? 'Unknown',
                     'metode' => $payment->payment_method ?? 'Unknown',
-                    'nominal' => $payment->amount,
+                    'nominal' => $payment->grand_total,
                     'status' => $payment->status
                 ];
             })

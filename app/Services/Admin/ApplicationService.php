@@ -26,10 +26,14 @@ class ApplicationService
         return $app;
     }
 
-    public function rejectApplication(int $id)
+    public function rejectApplication(int $id, ?string $reason = null, ?int $adminId = null)
     {
         $app = TutorApplication::findOrFail($id);
-        $app->update(['status' => 'rejected']);
+        $app->update([
+            'status' => 'rejected',
+            'admin_note' => $reason,
+            'approved_by' => $adminId // Mencatat admin siapa yang menolak
+        ]);
         return $app;
     }
 }
