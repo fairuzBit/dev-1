@@ -39,6 +39,8 @@ class UserSeeder extends Seeder
                     'password' => Hash::make('password'),
                     'email_verified_at' => now(),
                     'role' => $i <= 5 ? 'tutor' : 'learner',
+                    'nim' => 'A11.2023.100' . str_pad($i, 2, '0', STR_PAD_LEFT),
+                    'phone' => '0812345678' . str_pad($i, 2, '0', STR_PAD_LEFT),
                 ]
             );
             
