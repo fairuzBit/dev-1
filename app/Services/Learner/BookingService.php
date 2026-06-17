@@ -80,7 +80,7 @@ class BookingService
      */
     public function getActiveOrders($learnerId)
     {
-        return Booking::with(['tutor.user', 'course', 'bookingSlots.slot'])
+        return Booking::with(['tutor.user', 'course', 'bookingSlots.masterSlot'])
             ->where('learner_id', $learnerId)
             ->whereIn('status', ['pending', 'accepted'])
             ->orderBy('created_at', 'desc')
@@ -93,7 +93,7 @@ class BookingService
      */
     public function getUpcomingSchedules($learnerId)
     {
-        return Booking::with(['tutor.user', 'course', 'bookingSlots.slot'])
+        return Booking::with(['tutor.user', 'course', 'bookingSlots.masterSlot'])
             ->where('learner_id', $learnerId)
             ->where('status', 'accepted')
             ->where('payment_status', 'paid')
@@ -107,7 +107,7 @@ class BookingService
      */
     public function getHistory($learnerId)
     {
-        return Booking::with(['tutor.user', 'course', 'bookingSlots.slot', 'review'])
+        return Booking::with(['tutor.user', 'course', 'bookingSlots.masterSlot', 'review'])
             ->where('learner_id', $learnerId)
             ->whereIn('status', ['completed', 'cancelled', 'rejected'])
             ->orderBy('booking_date', 'desc')
@@ -119,7 +119,7 @@ class BookingService
      */
     public function getBookingDetail($learnerId, $bookingId)
     {
-        return Booking::with(['tutor.user', 'course', 'bookingSlots.slot', 'review'])
+        return Booking::with(['tutor.user', 'course', 'bookingSlots.masterSlot', 'review'])
             ->where('learner_id', $learnerId)
             ->where('id', $bookingId)
             ->firstOrFail();

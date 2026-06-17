@@ -23,7 +23,7 @@ class AvailabilitySlot extends Model
     }
 
     // Relasi ke MasterSlot (Jam belajarnya)
-    public function slot()
+    public function masterSlot()
     {
         return $this->belongsTo(MasterSlot::class, 'slot_id');
     }

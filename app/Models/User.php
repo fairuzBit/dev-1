@@ -29,7 +29,8 @@ class User extends Authenticatable implements JWTSubject
         'avatar',
         'nim',
         'phone',
-        'suspended_until'
+        'suspended_until',
+        'role'
     ];
 
     /**

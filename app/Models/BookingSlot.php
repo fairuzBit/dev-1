@@ -26,7 +26,7 @@ class BookingSlot extends Model
     }
 
     // Relasi ke tabel Master Jam
-    public function slot()
+    public function masterSlot()
     {
         return $this->belongsTo(MasterSlot::class, 'slot_id');
     }

@@ -34,7 +34,7 @@ class ReviewController extends Controller
                     'id' => $review->id,
                     'rating' => $review->rating,
                     'comment' => $review->comment,
-                    'learner' => $review->user->name ?? 'Unknown',
+                    'learner' => $review->booking->learner->name ?? 'Unknown',
                     'date' => $review->created_at->format('Y-m-d')
                 ];
             })

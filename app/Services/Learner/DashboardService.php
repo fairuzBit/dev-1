@@ -11,7 +11,7 @@ class DashboardService
      */
     public function getUpcomingClass($learnerId)
     {
-        return Booking::with(['tutor.user', 'course', 'bookingSlots.slot'])
+        return Booking::with(['tutor.user', 'course', 'bookingSlots.masterSlot'])
             ->where('learner_id', $learnerId)
             ->whereIn('status', ['accepted'])
             ->where('booking_date', '>=', now()->toDateString())

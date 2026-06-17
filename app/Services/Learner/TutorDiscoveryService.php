@@ -11,7 +11,7 @@ class TutorDiscoveryService
      */
     public function getAllTutors(array $filters = [], int $perPage = 9)
     {
-        $query = Tutor::with(['user', 'courses.course', 'availabilitySlots.slot'])
+        $query = Tutor::with(['user', 'courses.course', 'availabilitySlots.masterSlot'])
             ->withCount(['bookings as total_sessions' => function ($q) {
                 $q->where('status', 'completed');
             }])
@@ -41,7 +41,7 @@ class TutorDiscoveryService
      */
     public function getTutorById(int $id)
     {
-        return Tutor::with(['user', 'courses.course', 'availabilitySlots.slot'])
+        return Tutor::with(['user', 'courses.course', 'availabilitySlots.masterSlot'])
             ->withCount(['bookings as total_sessions' => function ($q) {
                 $q->where('status', 'completed');
             }])

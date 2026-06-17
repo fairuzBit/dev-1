@@ -17,6 +17,7 @@ return new class extends Migration
             
             $table->tinyInteger('rating');
             $table->text('comment')->nullable(); 
+            $table->string('moderation_status')->nullable();
             
             $table->timestamps();
         });

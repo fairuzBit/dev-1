@@ -19,12 +19,13 @@ class UserSeeder extends Seeder
                 'name' => 'Admin Utama',
                 'password' => \Illuminate\Support\Facades\Hash::make('password'),
                 'email_verified_at' => now(),
+                'role' => 'admin',
             ]
         );
         $admin->assignRole('admin');
 
         // 3 Tutor
-        $tutors = \App\Models\User::factory()->count(3)->create();
+        $tutors = \App\Models\User::factory()->count(3)->create(['role' => 'tutor']);
         foreach ($tutors as $index => $tutor) {
             $tutor->assignRole('tutor');
             
@@ -37,7 +38,7 @@ class UserSeeder extends Seeder
         }
 
         // 3 Learner
-        $learners = \App\Models\User::factory()->count(3)->create();
+        $learners = \App\Models\User::factory()->count(3)->create(['role' => 'learner']);
         foreach ($learners as $learner) {
             $learner->assignRole('learner');
         }

@@ -35,8 +35,8 @@ class BookingController extends Controller
             'data' => $bookings->map(function ($b) {
                 return [
                     'id' => $b->id,
-                    'learner' => $b->user->name ?? 'Unknown',
-                    'date' => $b->date,
+                    'learner' => $b->learner->name ?? 'Unknown',
+                    'date' => $b->booking_date,
                     'status' => $b->status,
                     'total_price' => $b->total_price,
                     'slots' => $b->bookingSlots->map(fn($bs) => $bs->masterSlot->time_range ?? '')

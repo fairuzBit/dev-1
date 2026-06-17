@@ -9,7 +9,7 @@ class BookingService
 {
     public function getPendingBookings(int $tutorId)
     {
-        return Booking::with(['user', 'bookingSlots.masterSlot'])
+        return Booking::with(['learner', 'bookingSlots.masterSlot'])
             ->where('tutor_id', $tutorId)
             ->whereIn('status', ['pending', 'paid'])
             ->get();
@@ -17,16 +17,16 @@ class BookingService
 
     public function getSchedules(int $tutorId)
     {
-        return Booking::with(['user', 'bookingSlots.masterSlot'])
+        return Booking::with(['learner', 'bookingSlots.masterSlot'])
             ->where('tutor_id', $tutorId)
             ->where('status', 'accepted')
-            ->where('date', '>=', now()->toDateString())
+            ->where('booking_date', '>=', now()->toDateString())
             ->get();
     }
 
     public function getHistory(int $tutorId)
     {
-        return Booking::with('user')
+        return Booking::with('learner')
             ->where('tutor_id', $tutorId)
             ->whereIn('status', ['completed', 'rejected', 'cancelled'])
             ->get();

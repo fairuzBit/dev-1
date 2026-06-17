@@ -8,8 +8,10 @@ class ReviewService
 {
     public function getReviews(int $tutorId)
     {
-        return Review::with('user')
-            ->where('tutor_id', $tutorId)
+        return Review::with('booking.learner')
+            ->whereHas('booking', function($query) use ($tutorId) {
+                $query->where('tutor_id', $tutorId);
+            })
             ->get();
     }
 }
