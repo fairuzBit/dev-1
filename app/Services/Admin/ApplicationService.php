@@ -8,7 +8,7 @@ class ApplicationService
 {
     public function getAllApplications()
     {
-        return TutorApplication::with(['user', 'course'])->get();
+        return TutorApplication::with(['user', 'courses', 'skills'])->get();
     }
 
     public function approveApplication(int $id, int $adminId)

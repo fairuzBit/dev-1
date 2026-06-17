@@ -30,7 +30,17 @@ class PaymentController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Daftar pembayaran berhasil diambil',
-            'data' => $payments
+            'data' => $payments->map(function ($payment) {
+                return [
+                    'id' => $payment->id,
+                    'tanggal' => $payment->created_at->format('d M Y, H:i'),
+                    'learner' => $payment->learner->name ?? 'Unknown',
+                    'tutor' => $payment->tutor->user->name ?? 'Unknown',
+                    'metode' => $payment->payment_method ?? 'Unknown',
+                    'nominal' => $payment->amount,
+                    'status' => $payment->status
+                ];
+            })
         ]);
     }
 

@@ -28,8 +28,10 @@ class UserController extends Controller
                     'id' => $user->id,
                     'name' => $user->name,
                     'email' => $user->email,
-                    'role' => $user->roles->first()->name ?? 'user',
-                    'status' => 'active'
+                    'role' => $user->roles->first()->name ?? 'learner',
+                    'avatar' => $user->avatar,
+                    'created_at' => $user->created_at->format('d M Y'),
+                    'suspended_until' => $user->suspended_until,
                 ];
             })
         ]);

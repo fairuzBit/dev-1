@@ -25,7 +25,17 @@ class ModerationController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Daftar ulasan yang butuh moderasi berhasil diambil',
-            'data' => $reviews
+            'data' => $reviews->map(function ($review) {
+                return [
+                    'id' => $review->id,
+                    'tanggal' => $review->created_at->format('d M Y, H:i'),
+                    'learner_name' => $review->learner->name ?? 'Unknown',
+                    'tutor_name' => $review->tutor->user->name ?? 'Unknown',
+                    'rating' => $review->rating,
+                    'comment' => $review->comment,
+                    'moderation_status' => $review->moderation_status ?? 'MENUNGGU TINJAUAN'
+                ];
+            })
         ]);
     }
 
