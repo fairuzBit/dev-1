@@ -52,9 +52,11 @@ class ApplicationController extends Controller
         ]);
     }
 
-    public function reject($id)
+    public function reject(Request $request, $id)
     {
-        $app = $this->applicationService->rejectApplication($id);
+        // Tangkap alasan dari frontend
+        $reason = $request->input('admin_note');
+        $app = $this->applicationService->rejectApplication($id, $reason, $request->user()->id);
 
         return response()->json([
             'message' => 'Tutor ditolak',
