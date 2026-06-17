@@ -8,7 +8,9 @@ class ApplicationService
 {
     public function getAllApplications()
     {
-        return TutorApplication::with(['user', 'course'])->get();
+        return TutorApplication::with(['user', 'course'])
+                               ->where('status', 'pending')
+                               ->get();
     }
 
     public function approveApplication(int $id, int $adminId)
@@ -20,7 +22,7 @@ class ApplicationService
             'approved_at' => now()
         ]);
         
-        $app->user->assignRole('tutor');
+        $app->user->syncRoles('tutor');
         return $app;
     }
 
