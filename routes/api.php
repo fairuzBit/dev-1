@@ -44,7 +44,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/master-slots', [MasterDataController::class, 'masterSlots']);
     
     // KHUSUS ROLE: LEARNER
-    Route::middleware('role:learner')->group(function () {
+    Route::middleware('role:learner,api')->group(function () {
         Route::get('/tutors', [TutorDiscoveryController::class, 'index']); 
         Route::get('/tutors/{id}', [TutorDiscoveryController::class, 'show']);
         Route::get('/me', [ProfileController::class, 'me']);
@@ -66,7 +66,7 @@ Route::middleware('auth:api')->group(function () {
     });
     
     // KHUSUS ROLE: TUTOR
-    Route::middleware('role:tutor')->group(function () {
+    Route::middleware('role:tutor,api')->group(function () {
         Route::get('/tutor/dashboard', [TutorDashboardController::class, 'index']);
         
         Route::get('/tutor/availability', [AvailabilityController::class, 'index']);
@@ -86,7 +86,7 @@ Route::middleware('auth:api')->group(function () {
     });
     
     // KHUSUS ROLE: ADMIN
-    Route::middleware('role:admin')->group(function () {
+    Route::middleware('role:admin,api')->group(function () {
         // User Management (Suspend/Unsuspend)
         Route::get('/admin/users', [UserController::class, 'index']);
         Route::delete('/admin/users/{id}', [UserController::class, 'destroy']);
