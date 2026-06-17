@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\Tutor\TutorRegistrationController;
 use App\Http\Controllers\Api\Tutor\DashboardController as TutorDashboardController;
 use App\Http\Controllers\Api\Tutor\AvailabilityController;
 use App\Http\Controllers\Api\Tutor\BookingController as TutorBookingController;
+use App\Http\Controllers\Api\Admin\BookingController as AdminBookingController;
 use App\Http\Controllers\Api\Tutor\ProfileController as TutorProfileController;
 use App\Http\Controllers\Api\Tutor\ReviewController;
 use App\Http\Controllers\Api\Tutor\NotificationController as TutorNotificationController;
@@ -73,8 +74,7 @@ Route::middleware('auth:api')->group(function () {
         Route::post('/tutor/availability', [AvailabilityController::class, 'store']);
         
         Route::get('/tutor/bookings', [TutorBookingController::class, 'index']);
-        Route::patch('/tutor/bookings/{id}/accept', [TutorBookingController::class, 'accept']);
-        Route::patch('/tutor/bookings/{id}/reject', [TutorBookingController::class, 'reject']);
+
         
         Route::get('/tutor/schedules', [TutorBookingController::class, 'schedules']);
         Route::get('/tutor/history', [TutorBookingController::class, 'history']);
@@ -106,6 +106,10 @@ Route::middleware('auth:api')->group(function () {
         // Payments
         Route::get('/admin/payments', [PaymentController::class, 'index']);
         Route::patch('/admin/payments/{id}/approve', [PaymentController::class, 'approve']);
+        
+        // Admin Booking Moderation
+        Route::patch('/admin/bookings/{id}/accept', [AdminBookingController::class, 'accept']);
+        Route::patch('/admin/bookings/{id}/reject', [AdminBookingController::class, 'reject']);
         
         // CRUD Master Data
         Route::post('/admin/courses', [AdminMasterDataController::class, 'storeCourse']);

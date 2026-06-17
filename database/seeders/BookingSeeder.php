@@ -15,9 +15,9 @@ class BookingSeeder extends Seeder
 {
     public function run(): void
     {
-        $learner8 = User::where('email', 'learner8@mhs.dinus.ac.id')->first();
-        $learner9 = User::where('email', 'learner9@mhs.dinus.ac.id')->first();
-        $learner10 = User::where('email', 'learner10@mhs.dinus.ac.id')->first();
+        $learner8 = User::where('email', '111learner8@mhs.dinus.ac.id')->first();
+        $learner9 = User::where('email', '111learner9@mhs.dinus.ac.id')->first();
+        $learner10 = User::where('email', '111learner10@mhs.dinus.ac.id')->first();
 
         $tutors = Tutor::take(3)->get(); // Ambil 3 tutor pertama
         $masterSlots = MasterSlot::take(3)->get(); 
@@ -49,7 +49,7 @@ class BookingSeeder extends Seeder
             ]);
         }
 
-        // 2. Booking Aktif / Accepted (Oleh Learner 9 ke Tutor 2)
+        // 2. Booking Aktif / Disetujui (Di-ACC oleh Admin) (Oleh Learner 9 ke Tutor 2)
         $tutor2 = $tutors[1];
         $bookingPaid = Booking::create([
             'learner_id' => $learner9->id,
@@ -72,7 +72,7 @@ class BookingSeeder extends Seeder
             'end_time' => $masterSlots->first()->end_time
         ]);
 
-        // 3. Booking Menunggu Persetujuan Tutor / Pending Paid (Oleh Learner 10 ke Tutor 3)
+        // 3. Booking Pending / Menunggu ACC Admin (Oleh Learner 10 ke Tutor 3)
         $tutor3 = $tutors[2];
         $bookingPending = Booking::create([
             'learner_id' => $learner10->id,
@@ -113,6 +113,26 @@ class BookingSeeder extends Seeder
             'slot_id' => $masterSlots->last()->id,
             'start_time' => $masterSlots->last()->start_time,
             'end_time' => $masterSlots->last()->end_time
+        ]);
+
+        // 5. Booking Ditolak / Rejected oleh Admin (Oleh Learner 10 ke Tutor 1)
+        $bookingRejected = Booking::create([
+            'learner_id' => $learner10->id,
+            'tutor_id' => $tutor1->id,
+            'course_id' => $tutor1->courses->first()->course_id ?? 1,
+            'booking_date' => Carbon::now()->addDays(4)->toDateString(),
+            'status' => 'rejected', // Ditolak oleh Admin
+            'payment_status' => 'refunded', // Dana dikembalikan karena ditolak
+            'total_price' => $tutor1->price,
+            'service_fee' => 5000,
+            'grand_total' => $tutor1->price + 5000,
+        ]);
+        
+        BookingSlot::create([
+            'booking_id' => $bookingRejected->id,
+            'slot_id' => $masterSlots->first()->id,
+            'start_time' => $masterSlots->first()->start_time,
+            'end_time' => $masterSlots->first()->end_time
         ]);
     }
 }

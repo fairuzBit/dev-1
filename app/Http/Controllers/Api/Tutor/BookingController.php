@@ -65,29 +65,4 @@ class BookingController extends Controller
         return response()->json(['data' => $history]);
     }
 
-    public function accept(Request $request, $id)
-    {
-        $tutorId = $request->user()->tutor->id ?? null;
-        if (!$tutorId) return response()->json(['message' => 'Anda bukan tutor'], 403);
-
-        $booking = $this->bookingService->acceptBooking($tutorId, $id);
-
-        return response()->json([
-            'message' => 'Pesanan diterima',
-            'data' => $booking
-        ]);
-    }
-
-    public function reject(Request $request, $id)
-    {
-        $tutorId = $request->user()->tutor->id ?? null;
-        if (!$tutorId) return response()->json(['message' => 'Anda bukan tutor'], 403);
-
-        $booking = $this->bookingService->rejectBooking($tutorId, $id);
-
-        return response()->json([
-            'message' => 'Pesanan ditolak',
-            'data' => $booking
-        ]);
-    }
 }

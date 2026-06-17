@@ -10,8 +10,8 @@ class NotificationSeeder extends Seeder
     public function run(): void
     {
         // Berikan notifikasi untuk learner 8 dan 9
-        $learner8 = User::where('email', 'learner8@mhs.dinus.ac.id')->first();
-        $learner9 = User::where('email', 'learner9@mhs.dinus.ac.id')->first();
+        $learner8 = User::where('email', '111learner8@mhs.dinus.ac.id')->first();
+        $learner9 = User::where('email', '111learner9@mhs.dinus.ac.id')->first();
         
         if ($learner8) {
             \App\Models\Notification::create([
@@ -42,7 +42,7 @@ class NotificationSeeder extends Seeder
         }
         
         // Berikan notifikasi untuk tutor (learner1)
-        $tutor1 = User::where('email', 'learner1@mhs.dinus.ac.id')->first();
+        $tutor1 = User::where('email', '111learner1@mhs.dinus.ac.id')->first();
         if ($tutor1) {
             \App\Models\Notification::create([
                 'user_id' => $tutor1->id,
