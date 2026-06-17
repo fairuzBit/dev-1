@@ -28,12 +28,16 @@ class NotificationSeeder extends Seeder
                 'is_read' => false,
             ]);
 
+            // Ambil nominal pembayaran dari database
+            $completedBooking = \App\Models\Booking::where('learner_id', $learner8->id)->where('payment_status', 'paid')->first();
+            $paidAmount = $completedBooking ? number_format($completedBooking->grand_total, 0, ',', '.') : '55.000';
+
             // 2. Pembayaran Di-ACC
             Notification::create([
                 'user_id' => $learner8->id,
                 'type' => 'payment',
                 'title' => 'Pembayaran Berhasil',
-                'message' => 'Pembayaran Anda sebesar Rp55.000 telah berhasil diverifikasi oleh sistem. Sesi belajar Anda sudah aktif.',
+                'message' => "Pembayaran Anda sebesar Rp{$paidAmount} telah berhasil diverifikasi oleh sistem. Sesi belajar Anda sudah aktif.",
                 'is_read' => true,
             ]);
 
@@ -107,14 +111,8 @@ class NotificationSeeder extends Seeder
                 'is_read' => false,
             ]);
             
-            // TAMBAHAN SARAN: Ulasan Baru
-            Notification::create([
-                'user_id' => $tutor1->id,
-                'type' => 'system',
-                'title' => 'Ulasan Bintang 5 Baru!',
-                'message' => 'Anda mendapatkan ulasan bintang 5 dari Learner 8: "Tutornya sangat pintar!". Pertahankan!',
-                'is_read' => false,
-            ]);
+        
+            
         }
     }
 }
