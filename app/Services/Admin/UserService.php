@@ -8,7 +8,9 @@ class UserService
 {
     public function getAllUsers()
     {
-        return User::with('roles')->get();
+        return User::with('roles')->whereDoesntHave('roles', function ($query) {
+            $query->where('name', 'admin');
+        })->get();
     }
 
     public function destroyUser(int $id)
