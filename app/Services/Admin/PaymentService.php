@@ -8,7 +8,7 @@ class PaymentService
 {
     public function getAllPayments()
     {
-        return Booking::with(['learner', 'tutor'])->get();
+        return Booking::with(['learner', 'tutor.user'])->get();
     }
 
     public function approvePayment(int $id)

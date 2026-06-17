@@ -28,9 +28,16 @@ class ApplicationController extends Controller
                     'id' => $app->id,
                     'user_id' => $app->user_id,
                     'name' => $app->user->name ?? 'Unknown',
-                    'course' => $app->course->name ?? 'Unknown',
+                    'email' => $app->user->email ?? 'Unknown',
+                    'avatar' => $app->user->avatar ?? null,
                     'status' => $app->status,
-                    'cv_url' => asset('storage/' . $app->transcript_file)
+                    'created_at' => $app->created_at->format('d M Y'),
+                    'documents' => [
+                        ['type' => 'file', 'name' => 'KHS.pdf', 'label' => 'Transkrip Nilai', 'url' => asset('storage/' . $app->transcript_file)],
+                        ['type' => 'link', 'value' => $app->portfolio_link, 'label' => 'Portofolio'],
+                    ],
+                    'matkul' => $app->courses ? $app->courses->pluck('name') : [],
+                    'keahlian' => $app->skills ? $app->skills->pluck('name') : [],
                 ];
             })
         ]);
