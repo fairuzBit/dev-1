@@ -10,7 +10,7 @@ class ApplicationService
     public function getAllApplications()
     {
         return TutorApplication::with(['user', 'course'])
-                               ->where('status', 'pending')
+                               ->orderBy('created_at', 'desc')
                                ->get();
     }
 
