@@ -66,19 +66,23 @@ class TutorRegistrationService
             ]
         );
 
-        $application = TutorApplication::create([
-            'user_id' => $userId,
-            'course_id' => $data['course_id'],
-            'grade' => $data['grade'] ?? 'N/A',
-            'transcript_files' => $paths,
-            'portfolio_urls' => $data['portfolio_urls'] ?? null,
-            'certificate_files' => !empty($certPaths) ? $certPaths : null,
-            'status' => 'pending'
-        ]);
+        $applicationIds = [];
+        foreach ($data['course_ids'] as $courseId) {
+            $application = TutorApplication::create([
+                'user_id' => $userId,
+                'course_id' => $courseId,
+                'grade' => 'N/A', // Nilai di transkrip sudah divalidasi manual oleh admin / AI
+                'transcript_files' => $paths,
+                'portfolio_urls' => $data['portfolio_urls'] ?? null,
+                'certificate_files' => !empty($certPaths) ? $certPaths : null,
+                'status' => 'pending'
+            ]);
+            $applicationIds[] = $application->id;
+        }
 
         return [
             'extracted_ipk' => $calculatedIpk,
-            'application_id' => $application->id,
+            'application_ids' => $applicationIds,
         ];
     }
 

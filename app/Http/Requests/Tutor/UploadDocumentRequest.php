@@ -17,7 +17,8 @@ class UploadDocumentRequest extends FormRequest
         return [
             'transcript_files' => 'required|array|min:1',
             'transcript_files.*' => 'mimes:pdf|max:5120', // Maks 5MB per file
-            'course_id' => 'required|exists:courses,id',
+            'course_ids' => 'required|array|min:1',
+            'course_ids.*' => 'exists:courses,id',
             'current_semester' => 'required|integer|min:2|max:14',
             'portfolio_urls' => 'nullable|array',
             'portfolio_urls.*' => 'url|max:255',
@@ -30,13 +31,16 @@ class UploadDocumentRequest extends FormRequest
     public function withValidator($validator)
     {
         $validator->after(function ($validator) {
-            $courseId = $this->input('course_id');
+            $courseIds = $this->input('course_ids', []);
             $currentSemester = $this->input('current_semester');
 
-            if ($courseId && $currentSemester) {
-                $course = Course::find($courseId);
-                if ($course && $course->semester >= $currentSemester) {
-                    $validator->errors()->add('course_id', 'Tutor hanya dapat mengajar mata kuliah yang semesternya berada di bawah semester yang sedang ditempuh.');
+            if (!empty($courseIds) && $currentSemester) {
+                $invalidCourses = Course::whereIn('id', $courseIds)
+                                        ->where('semester', '>=', $currentSemester)
+                                        ->exists();
+                
+                if ($invalidCourses) {
+                    $validator->errors()->add('course_ids', 'Tutor hanya dapat mengajar mata kuliah yang semesternya berada di bawah semester yang sedang ditempuh.');
                 }
             }
         });
