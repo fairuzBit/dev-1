@@ -25,5 +25,9 @@ class DatabaseSeeder extends Seeder
             ReviewSeeder::class,
             NotificationSeeder::class,
         ]);
+
+        // Otomatis generate PDF dummy tiap kali database di-seed
+        \Illuminate\Support\Facades\Artisan::call('app:generate-sample-pdfs');
+        $this->command->info('Sample PDFs generated automatically.');
     }
 }
