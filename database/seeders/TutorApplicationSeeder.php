@@ -24,7 +24,7 @@ class TutorApplicationSeeder extends Seeder
                 [
                     'course_id' => $course->id,
                     'grade' => 'A',
-                    'transcript_file' => "transcripts/dummy_learner6.pdf",
+                    'transcript_files' => ["transcripts/dummy_learner6.pdf"],
                     'status' => 'pending',
                 ]
             );
@@ -36,7 +36,7 @@ class TutorApplicationSeeder extends Seeder
                 [
                     'course_id' => $course->id,
                     'grade' => 'A',
-                    'transcript_file' => "transcripts/dummy_learner7.pdf",
+                    'transcript_files' => ["transcripts/dummy_learner7.pdf"],
                     'status' => 'rejected',
                     'admin_note' => 'Transkrip tidak terbaca, mohon scan ulang.',
                     'approved_by' => $admin->id ?? 1,
