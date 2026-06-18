@@ -34,10 +34,27 @@ class AvailabilityController extends Controller
 
         return response()->json([
             'data' => $availabilities->map(function ($slot) {
+                $dayMap = [
+                    'Monday' => 'Senin',
+                    'Tuesday' => 'Selasa',
+                    'Wednesday' => 'Rabu',
+                    'Thursday' => 'Kamis',
+                    'Friday' => 'Jumat',
+                    'Saturday' => 'Sabtu',
+                    'Sunday' => 'Minggu',
+                ];
+                
+                $time = null;
+                if ($slot->masterSlot) {
+                    $start = date('H.i', strtotime($slot->masterSlot->start_time));
+                    $end = date('H.i', strtotime($slot->masterSlot->end_time));
+                    $time = $start . ' - ' . $end;
+                }
+
                 return [
                     'id' => $slot->id,
-                    'day' => $slot->day_of_week,
-                    'time' => $slot->masterSlot->time_range ?? null,
+                    'day' => $dayMap[$slot->day_of_week] ?? $slot->day_of_week,
+                    'time' => $time,
                 ];
             })
         ]);
