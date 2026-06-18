@@ -8,7 +8,7 @@ class ModerationService
 {
     public function getReviewsToModerate()
     {
-        return Review::with(['learner', 'tutor.user'])->whereIn('rating', [1, 2])->get();
+        return Review::with(['booking.learner', 'booking.tutor.user'])->whereIn('rating', [1, 2])->get();
     }
 
     public function deleteReview(int $id)

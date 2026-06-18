@@ -29,8 +29,8 @@ class ModerationController extends Controller
                 return [
                     'id' => $review->id,
                     'tanggal' => $review->created_at->format('d M Y, H:i'),
-                    'learner_name' => $review->learner->name ?? 'Unknown',
-                    'tutor_name' => $review->tutor->user->name ?? 'Unknown',
+                    'learner_name' => $review->booking->learner->name ?? 'Unknown',
+                    'tutor_name' => $review->booking->tutor->user->name ?? 'Unknown',
                     'rating' => $review->rating,
                     'comment' => $review->comment,
                     'moderation_status' => $review->moderation_status ?? 'MENUNGGU TINJAUAN'
