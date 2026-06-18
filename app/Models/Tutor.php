@@ -7,10 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Tutor extends Model
 {
-    protected $fillable = ['user_id', 'bio', 'ipk', 'skills', 'rating_avg', 'total_reviews', 'is_active', 'price', 'current_semester', 'portfolio_url', 'certificate_files'];
+    protected $fillable = ['user_id', 'bio', 'ipk', 'skills', 'rating_avg', 'total_reviews', 'is_active', 'price', 'current_semester', 'portfolio_urls', 'certificate_files'];
 
     protected $casts = [
         'skills' => 'array',
+        'portfolio_urls' => 'array',
         'certificate_files' => 'array',
     ];
 

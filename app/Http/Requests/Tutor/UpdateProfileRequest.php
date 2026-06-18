@@ -22,7 +22,10 @@ class UpdateProfileRequest extends FormRequest
             'skills' => 'nullable|array',
             'price_per_session' => 'nullable|numeric',
             'price' => 'nullable|numeric',
-            'portfolio_url' => 'nullable|url|max:255'
+            'portfolio_urls' => 'nullable|array',
+            'portfolio_urls.*' => 'url|max:255',
+            'certificate_files' => 'nullable|array',
+            'certificate_files.*' => 'mimes:pdf,jpg,jpeg,png|max:5120',
         ];
     }
 }

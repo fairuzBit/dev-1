@@ -61,7 +61,7 @@ class TutorRegistrationService
                 'ipk' => $calculatedIpk,
                 'current_semester' => $data['current_semester'],
                 'skills' => isset($data['skills']) ? json_decode($data['skills'], true) : null,
-                'portfolio_url' => $data['portfolio_url'] ?? null,
+                'portfolio_urls' => $data['portfolio_urls'] ?? null,
                 'certificate_files' => !empty($certPaths) ? $certPaths : null,
             ]
         );
@@ -71,7 +71,7 @@ class TutorRegistrationService
             'course_id' => $data['course_id'],
             'grade' => $data['grade'] ?? 'N/A',
             'transcript_files' => $paths,
-            'portfolio_url' => $data['portfolio_url'] ?? null,
+            'portfolio_urls' => $data['portfolio_urls'] ?? null,
             'certificate_files' => !empty($certPaths) ? $certPaths : null,
             'status' => 'pending'
         ]);

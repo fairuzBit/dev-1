@@ -17,11 +17,24 @@ class TutorProfileService
             $user->update($userData);
         }
 
-        $tutorData = collect($data)->only(['bio', 'skills', 'price', 'portfolio_url'])->toArray();
+        $tutorData = collect($data)->only(['bio', 'skills', 'price', 'portfolio_urls'])->toArray();
         if (isset($data['price_per_session'])) {
             $tutorData['price'] = $data['price_per_session'];
         }
         
+        if (isset($data['certificate_files']) && is_array($data['certificate_files'])) {
+            $certPaths = [];
+            foreach ($data['certificate_files'] as $certFile) {
+                $certPaths[] = $certFile->store('certificates', 'public');
+            }
+            if ($tutor->certificate_files) {
+                foreach ($tutor->certificate_files as $oldPath) {
+                    \Illuminate\Support\Facades\Storage::disk('public')->delete($oldPath);
+                }
+            }
+            $tutorData['certificate_files'] = $certPaths;
+        }
+
         if (!empty($tutorData)) {
             $tutor->update($tutorData);
         }

@@ -32,7 +32,7 @@ class ApplicationController extends Controller
                     'avatar' => $app->user->avatar ?? null,
                     'status' => $app->status,
                     'created_at' => $app->created_at->format('d M Y'),
-                    'portfolio_url' => $app->portfolio_url,
+                    'portfolio_urls' => $app->portfolio_urls ?? [],
                     'documents' => collect($app->transcript_files)->map(function ($path, $index) {
                         return [
                             'type' => 'transcript',

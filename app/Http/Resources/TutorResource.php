@@ -25,7 +25,10 @@ class TutorResource extends JsonResource
             'total_sessions' => $this->total_sessions ?? 0,
             'skills' => json_decode($this->skills, true) ?? [],
             'price' => (int) $this->price,
-            'portfolio_url' => $this->portfolio_url,
+            'portfolio_urls' => is_array($this->portfolio_urls) ? $this->portfolio_urls : [],
+            'certificate_files' => collect($this->certificate_files ?? [])->map(function ($path) {
+                return asset('storage/' . $path);
+            })->toArray(),
             
             'taught_courses' => $this->whenLoaded('courses', function () {
                 return $this->courses->map(function ($tutorCourse) {

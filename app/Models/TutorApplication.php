@@ -18,7 +18,7 @@ class TutorApplication extends Model
         'new_semester',
         'grade',
         'transcript_files',
-        'portfolio_url',
+        'portfolio_urls',
         'certificate_files',
         'status',
         'admin_note',
@@ -28,6 +28,7 @@ class TutorApplication extends Model
 
     protected $casts = [
         'transcript_files' => 'array',
+        'portfolio_urls' => 'array',
         'certificate_files' => 'array',
         'approved_at' => 'datetime',
     ];

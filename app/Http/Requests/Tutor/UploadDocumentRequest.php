@@ -19,7 +19,8 @@ class UploadDocumentRequest extends FormRequest
             'transcript_files.*' => 'mimes:pdf|max:5120', // Maks 5MB per file
             'course_id' => 'required|exists:courses,id',
             'current_semester' => 'required|integer|min:2|max:14',
-            'portfolio_url' => 'nullable|url|max:255',
+            'portfolio_urls' => 'nullable|array',
+            'portfolio_urls.*' => 'url|max:255',
             'skills' => 'nullable|json',
             'certificate_files' => 'nullable|array',
             'certificate_files.*' => 'mimes:pdf,jpg,jpeg,png|max:5120',
