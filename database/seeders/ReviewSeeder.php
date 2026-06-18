@@ -12,7 +12,7 @@ class ReviewSeeder extends Seeder
 {
     public function run(): void
     {
-        $learner7 = User::where('email', '111learner7@mhs.dinus.ac.id')->first();
+        $learner7 = User::where('email', '111rinamelati7@mhs.dinus.ac.id')->first();
         $tutor2 = Tutor::find(2) ?? Tutor::first();
         
         // Buat 4 booking dummy berstatus completed agar kita punya total 5 booking completed

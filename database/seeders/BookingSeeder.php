@@ -15,9 +15,9 @@ class BookingSeeder extends Seeder
 {
     public function run(): void
     {
-        $learner8 = User::where('email', '111learner8@mhs.dinus.ac.id')->first();
-        $learner9 = User::where('email', '111learner9@mhs.dinus.ac.id')->first();
-        $learner10 = User::where('email', '111learner10@mhs.dinus.ac.id')->first();
+        $learner8 = User::where('email', '111dewilestari8@mhs.dinus.ac.id')->first();
+        $learner9 = User::where('email', '111agusprayitno9@mhs.dinus.ac.id')->first();
+        $learner10 = User::where('email', '111ninakarina10@mhs.dinus.ac.id')->first();
 
         $tutors = Tutor::take(3)->get(); // Ambil 3 tutor pertama
         $masterSlots = MasterSlot::take(3)->get(); 

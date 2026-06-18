@@ -154,6 +154,48 @@ class GenerateSamplePdfs extends Command
             }
         }
 
+        // Generate dummy transcript for Budi Santoso (Learner 6) who is currently applying
+        $this->info("Generating Transcript for Pending Applicant: Budi Santoso");
+        $pendingHtml = "
+            <style>
+                body { font-family: sans-serif; font-size: 14px; }
+                .header { text-align: center; margin-bottom: 20px; }
+                table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+                th, td { border: 1px solid #000; padding: 8px; text-align: left; }
+            </style>
+            <div class='header'>
+                <h2>TRANSKRIP NILAI MAHASISWA (PENDAFTAR)</h2>
+                <p>Universitas Dian Nuswantoro</p>
+            </div>
+            <p><strong>Nama:</strong> Budi Santoso</p>
+            <p><strong>NIM:</strong> A11.2023.10006</p>
+            <p><strong>Program Studi:</strong> Teknik Informatika</p>
+            <hr>
+            <table>
+                <thead>
+                    <tr><th>No</th><th>Kode</th><th>Mata Kuliah</th><th>SKS</th><th>Nilai</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>1</td><td>A11.111</td><td>Kalkulus</td><td>4</td><td>A</td></tr>
+                    <tr><td>2</td><td>A11.113</td><td>Dasar Pemrograman</td><td>4</td><td>A</td></tr>
+                </tbody>
+            </table>
+            <h4>Ringkasan IP Semester (IPS)</h4>
+            <ul>
+                <li>Semester 1: <strong>3.95</strong></li>
+                <li>Semester 2: <strong>3.80</strong></li>
+            </ul>
+            <hr>
+            <p><strong>Total SKS:</strong> 8</p>
+            <p><strong>Indeks Prestasi Kumulatif (IPK) Otomatis:</strong> 3.88</p>
+            <p><i>Dokumen ini dicetak untuk pendaftaran tutor.</i></p>
+        ";
+        
+        $pendingPdf = Pdf::loadHTML($pendingHtml);
+        Storage::disk('public')->makeDirectory('transcripts');
+        Storage::disk('public')->put("transcripts/dummy_learner6.pdf", $pendingPdf->output());
+        $this->line("Created: public/storage/transcripts/dummy_learner6.pdf");
+
         $this->info('All sample PDFs generated successfully!');
     }
 }
