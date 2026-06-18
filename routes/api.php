@@ -41,14 +41,14 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/register/tutor/upload-document', [TutorRegistrationController::class, 'uploadDocument']);
     Route::post('/tutor/upgrade-semester', [TutorRegistrationController::class, 'upgradeSemester']);
     
-    // Master Data (Bisa diakses Learner & Tutor)
+    // Master Data & Public Resources (Bisa diakses Semua Role yang Login)
     Route::get('/courses', [MasterDataController::class, 'courses']);
     Route::get('/master-slots', [MasterDataController::class, 'masterSlots']);
+    Route::get('/tutors', [TutorDiscoveryController::class, 'index']); 
+    Route::get('/tutors/{id}', [TutorDiscoveryController::class, 'show']);
     
     // KHUSUS ROLE: LEARNER
-    Route::middleware('role:learner,api')->group(function () {
-        Route::get('/tutors', [TutorDiscoveryController::class, 'index']); 
-        Route::get('/tutors/{id}', [TutorDiscoveryController::class, 'show']);
+    Route::middleware('role:learner|tutor,api')->group(function () {
         Route::get('/me', [ProfileController::class, 'me']);
         Route::patch('/me', [ProfileController::class, 'update']);
         Route::get('/me/tutor-application-status', [ProfileController::class, 'tutorApplicationStatus']);
@@ -88,6 +88,9 @@ Route::middleware('auth:api')->group(function () {
     
     // KHUSUS ROLE: ADMIN
     Route::middleware('role:admin,api')->group(function () {
+        // Admin Dashboard Stats
+        Route::get('/admin/stats', [StatsController::class, 'index']);
+        
         // User Management (Suspend/Unsuspend)
         Route::get('/admin/users', [UserController::class, 'index']);
         Route::delete('/admin/users/{id}', [UserController::class, 'destroy']);
