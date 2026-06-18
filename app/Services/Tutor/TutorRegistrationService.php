@@ -44,8 +44,9 @@ class TutorRegistrationService
         $application = TutorApplication::create([
             'user_id' => $userId,
             'course_id' => $data['course_id'],
-            'grade' => $data['grade'],
+            'grade' => $data['grade'] ?? 'N/A', // Set N/A since OCR will verify
             'transcript_file' => $path,
+            'portfolio_url' => $data['portfolio_url'] ?? null,
             'status' => 'pending'
         ]);
 

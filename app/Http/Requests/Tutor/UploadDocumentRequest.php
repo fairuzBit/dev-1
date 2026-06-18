@@ -18,7 +18,7 @@ class UploadDocumentRequest extends FormRequest
             'transcript_file' => 'required|mimes:pdf|max:5120', // Maks 5MB
             'course_id' => 'required|exists:courses,id',
             'current_semester' => 'required|integer|min:2|max:14',
-            'grade' => 'required|string|max:2',
+            'portfolio_url' => 'nullable|url|max:255',
         ];
     }
 

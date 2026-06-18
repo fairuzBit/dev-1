@@ -34,6 +34,12 @@ class ApplicationService
             $message = 'Selamat! Pengajuan Anda telah disetujui Admin. Sekarang Anda resmi menjadi Tutor di KonekDin.';
         }
 
+        if ($app->portfolio_url && $app->user->tutor) {
+            $app->user->tutor->update([
+                'portfolio_url' => $app->portfolio_url
+            ]);
+        }
+
         Notification::create([
             'user_id' => $app->user_id,
             'type' => 'application',

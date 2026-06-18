@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Tutor extends Model
 {
-    protected $fillable = ['user_id', 'bio', 'ipk', 'skills', 'rating_avg', 'total_reviews', 'is_active', 'price', 'current_semester'];
+    protected $fillable = ['user_id', 'bio', 'ipk', 'skills', 'rating_avg', 'total_reviews', 'is_active', 'price', 'current_semester', 'portfolio_url'];
 
     // Relasi balik ke User (untuk mengambil nama dan avatar)
     public function user()

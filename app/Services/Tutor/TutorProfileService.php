@@ -17,7 +17,7 @@ class TutorProfileService
             $user->update($userData);
         }
 
-        $tutorData = collect($data)->only(['bio', 'skills', 'price'])->toArray();
+        $tutorData = collect($data)->only(['bio', 'skills', 'price', 'portfolio_url'])->toArray();
         if (isset($data['price_per_session'])) {
             $tutorData['price'] = $data['price_per_session'];
         }

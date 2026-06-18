@@ -21,7 +21,8 @@ class UpdateProfileRequest extends FormRequest
             'bio' => 'nullable|string',
             'skills' => 'nullable|array',
             'price_per_session' => 'nullable|numeric',
-            'price' => 'nullable|numeric'
+            'price' => 'nullable|numeric',
+            'portfolio_url' => 'nullable|url|max:255'
         ];
     }
 }

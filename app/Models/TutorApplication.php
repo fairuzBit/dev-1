@@ -22,6 +22,7 @@ class TutorApplication extends Model
         'admin_note',
         'approved_by',
         'approved_at',
+        'portfolio_url',
     ];
 
     // Relasi ke User (Yang mendaftar)

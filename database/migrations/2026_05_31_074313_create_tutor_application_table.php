@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignId('course_id')->nullable()->constrained('courses')->cascadeOnDelete();
             $table->string('grade')->nullable();
             $table->string('transcript_file')->nullable();
+            $table->string('portfolio_url')->nullable();
             $table->enum('status',['pending','approved','rejected'])->default('pending');
             $table->text('admin_note')->nullable();
             $table->foreignId('approved_by')->nullable()->constrained('users')->nullOnDelete();

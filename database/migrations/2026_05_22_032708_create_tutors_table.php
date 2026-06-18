@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->decimal('ipk', 3, 2)->nullable()->comment('Calculated via OCR');
             $table->text('bio')->nullable();
+            $table->string('portfolio_url')->nullable();
             $table->json('skills')->nullable();
             $table->float('rating_avg')->default(0);
             $table->integer('total_reviews')->default(0);

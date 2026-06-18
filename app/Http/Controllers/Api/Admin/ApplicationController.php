@@ -32,6 +32,7 @@ class ApplicationController extends Controller
                     'avatar' => $app->user->avatar ?? null,
                     'status' => $app->status,
                     'created_at' => $app->created_at->format('d M Y'),
+                    'portfolio_url' => $app->portfolio_url,
                     'documents' => [
                         ['type' => 'file', 'name' => 'Transkrip_KHS.pdf', 'label' => 'Transkrip Nilai', 'url' => asset('storage/' . $app->transcript_file)],
                     ],
