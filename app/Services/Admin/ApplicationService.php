@@ -57,7 +57,7 @@ class ApplicationService
             'is_read' => false,
         ]);
 
-        $app->user->syncRoles('tutor');
+        $app->user->assignRole('tutor');
         return $app;
     }
 

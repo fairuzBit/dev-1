@@ -48,6 +48,13 @@ class ApplicationController extends Controller
                             'label' => 'Sertifikat ' . ($index + 1),
                             'url' => asset('storage/' . $path)
                         ];
+                    }))->merge(collect($app->portfolio_urls ?? [])->map(function ($url, $index) {
+                        return [
+                            'type' => 'portfolio',
+                            'name' => parse_url($url, PHP_URL_HOST) ?? 'Link Eksternal',
+                            'label' => 'Portofolio ' . ($index + 1),
+                            'url' => $url
+                        ];
                     }))->toArray(),
                     'matkul' => $app->course ? [$app->course->name] : [],
                     'keahlian' => [],
