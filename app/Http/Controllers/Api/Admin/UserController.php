@@ -37,6 +37,27 @@ class UserController extends Controller
         ]);
     }
 
+    public function show($id)
+    {
+        $user = $this->userService->getUserById($id);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Detail profil pengguna berhasil diambil',
+            'data' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'role' => $user->roles->first()->name ?? 'learner',
+                'avatar' => $user->avatar,
+                'phone' => $user->phone,
+                'nim' => $user->nim,
+                'created_at' => $user->created_at->format('d M Y'),
+                'suspended_until' => $user->suspended_until,
+            ]
+        ]);
+    }
+
     public function destroy($id)
     {
         $this->userService->destroyUser($id);
