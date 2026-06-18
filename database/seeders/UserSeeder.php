@@ -32,10 +32,14 @@ class UserSeeder extends Seeder
         ];
 
         for ($i = 1; $i <= 10; $i++) {
+            $name = $names[$i - 1];
+            $formattedName = str_replace(' ', '', strtolower($name));
+            $email = "111{$formattedName}{$i}@mhs.dinus.ac.id";
+            
             $user = User::firstOrCreate(
-                ['email' => "111learner{$i}@mhs.dinus.ac.id"],
+                ['email' => $email],
                 [
-                    'name' => $names[$i - 1],
+                    'name' => $name,
                     'password' => Hash::make('password'),
                     'email_verified_at' => now(),
                     'role' => $i <= 5 ? 'tutor' : 'learner',

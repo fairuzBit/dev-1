@@ -63,4 +63,13 @@ class ApplicationController extends Controller
             'data' => $app
         ]);
     }
+
+    public function destroy($id)
+    {
+        $this->applicationService->deleteApplication($id);
+
+        return response()->json([
+            'message' => 'Pengajuan berhasil dihapus',
+        ]);
+    }
 }
