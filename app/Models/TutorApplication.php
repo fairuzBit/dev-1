@@ -15,6 +15,7 @@ class TutorApplication extends Model
     protected $fillable = [
         'user_id',
         'course_id',
+        'course_ids',
         'new_semester',
         'grade',
         'transcript_files',
@@ -30,6 +31,7 @@ class TutorApplication extends Model
         'transcript_files' => 'array',
         'portfolio_urls' => 'array',
         'certificate_files' => 'array',
+        'course_ids' => 'array',
         'approved_at' => 'datetime',
     ];
 
