@@ -93,6 +93,7 @@ Route::middleware('auth:api')->group(function () {
         
         // User Management (Suspend/Unsuspend)
         Route::get('/admin/users', [UserController::class, 'index']);
+        Route::get('/admin/users/{id}', [UserController::class, 'show']);
         Route::delete('/admin/users/{id}', [UserController::class, 'destroy']);
         Route::patch('/admin/users/{id}/suspend', [UserController::class, 'suspend']);
         Route::patch('/admin/users/{id}/unsuspend', [UserController::class, 'unsuspend']);

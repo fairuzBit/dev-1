@@ -13,6 +13,11 @@ class UserService
         })->get();
     }
 
+    public function getUserById(int $id)
+    {
+        return User::with('roles')->findOrFail($id);
+    }
+
     public function destroyUser(int $id)
     {
         $user = User::findOrFail($id);
