@@ -101,6 +101,7 @@ Route::middleware('auth:api')->group(function () {
         Route::get('/admin/applications', [ApplicationController::class, 'index']);
         Route::patch('/admin/applications/{id}/approve', [ApplicationController::class, 'approve']);
         Route::patch('/admin/applications/{id}/reject', [ApplicationController::class, 'reject']);
+        Route::delete('/admin/applications/{id}', [ApplicationController::class, 'destroy']);
         
         // Moderation
         Route::get('/admin/moderation/reviews', [ModerationController::class, 'reviews']);
