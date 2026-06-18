@@ -7,6 +7,8 @@ use App\Models\TutorApplication;
 use Illuminate\Support\Facades\Http;
 use Spatie\PdfToText\Pdf;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Storage;
 
 class TutorRegistrationService
 {
@@ -24,8 +26,17 @@ class TutorRegistrationService
                 ->setPdf($file->getPathname())
                 ->text();
             
-            // Hitung IPK menggunakan AI
-            $calculatedIpk = $this->extractIpkWithAI($text);
+            $aiResult = $this->extractIpkWithAI($text);
+            
+            if (!$aiResult['is_transcript']) {
+                Storage::disk('public')->delete($path);
+                throw ValidationException::withMessages([
+                    'transcript_file' => 'Dokumen yang diunggah tidak terdeteksi sebagai transkrip nilai atau KHS yang valid.'
+                ]);
+            }
+            $calculatedIpk = $aiResult['ipk'];
+        } catch (ValidationException $e) {
+            throw $e;
         } catch (\Exception $e) {
             Log::error('PDF Extraction Error: ' . $e->getMessage());
             $calculatedIpk = 0.00; // Jika gagal ekstrak teks atau AI error
@@ -65,7 +76,17 @@ class TutorRegistrationService
 
         try {
             $text = (new Pdf())->setPdf($file->getPathname())->text();
-            $calculatedIpk = $this->extractIpkWithAI($text);
+            $aiResult = $this->extractIpkWithAI($text);
+            
+            if (!$aiResult['is_transcript']) {
+                Storage::disk('public')->delete($path);
+                throw ValidationException::withMessages([
+                    'transcript_file' => 'Dokumen yang diunggah tidak terdeteksi sebagai transkrip nilai atau KHS yang valid.'
+                ]);
+            }
+            $calculatedIpk = $aiResult['ipk'];
+        } catch (ValidationException $e) {
+            throw $e;
         } catch (\Exception $e) {
             Log::error('PDF Extraction Error: ' . $e->getMessage());
             $calculatedIpk = 0.00;
@@ -94,17 +115,23 @@ class TutorRegistrationService
     /**
      * Fungsi Helper untuk memanggil Gemini API
      */
-    private function extractIpkWithAI(string $text): float
+    private function extractIpkWithAI(string $text): array
     {
         $apiKey = env('GEMINI_API_KEY');
         
         if (!$apiKey) {
-            return 0.00;
+            return ['is_transcript' => true, 'ipk' => 0.00];
         }
 
         // Prompt (Instruksi) untuk LLM
-        $prompt = "Berikut adalah teks dari transkrip nilai mahasiswa hasil OCR/PDF: \n\n" . substr($text, 0, 5000) . 
-                  "\n\nTolong temukan semua IPS dan SKS tiap semester. Hitung IPK akhirnya menggunakan rumus matematis: (Total dari (IPS * SKS)) dibagi dengan Total SKS. Jawab HANYA dengan JSON murni tanpa markdown block. Format wajib: {\"ipk\": 3.75}";
+        $prompt = "Berikut adalah teks hasil OCR dari sebuah dokumen: \n\n" . substr($text, 0, 5000) . 
+                  "\n\nTugas Anda:
+1. Analisis apakah teks ini merupakan dokumen 'Transkrip Nilai' atau 'Kartu Hasil Studi (KHS)' mahasiswa yang valid (harus mengandung daftar mata kuliah, SKS, nilai/grade).
+2. Jika BUKAN transkrip nilai, kembalikan JSON: {\"is_transcript\": false, \"ipk\": null}
+3. Jika YA, temukan semua IPS dan SKS tiap semester. Hitung IPK akhirnya menggunakan rumus matematis: (Total dari (IPS * SKS)) dibagi dengan Total SKS.
+4. Jika YA, kembalikan JSON: {\"is_transcript\": true, \"ipk\": 3.75}
+
+Jawab HANYA dengan JSON murni tanpa markdown block.";
 
         $response = Http::timeout(15)
             ->withHeaders(['Content-Type' => 'application/json'])
@@ -122,11 +149,12 @@ class TutorRegistrationService
             $resultText = $response->json('candidates.0.content.parts.0.text');
             $aiResult = json_decode($resultText, true);
             
-            if (isset($aiResult['ipk'])) {
-                return (float) $aiResult['ipk'];
-            }
+            return [
+                'is_transcript' => $aiResult['is_transcript'] ?? true,
+                'ipk' => isset($aiResult['ipk']) ? (float) $aiResult['ipk'] : 0.00
+            ];
         }
 
-        return 0.00;
+        return ['is_transcript' => true, 'ipk' => 0.00];
     }
 }
