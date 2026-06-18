@@ -83,6 +83,7 @@ Route::middleware('auth:api')->group(function () {
         Route::get('/tutor/reviews', [ReviewController::class, 'index']);
         Route::get('/tutor/notifications', [TutorNotificationController::class, 'index']);
         
+        Route::get('/tutor/profile', [TutorProfileController::class, 'me']);
         Route::patch('/tutor/profile', [TutorProfileController::class, 'update']);
     });
     

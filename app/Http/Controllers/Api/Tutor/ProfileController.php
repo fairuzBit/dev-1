@@ -18,6 +18,19 @@ class ProfileController extends Controller
     {
         $this->profileService = $profileService;
     }
+    public function me(Request $request)
+    {
+        $tutor = $request->user()->tutor;
+        if (!$tutor) {
+            return response()->json(['message' => 'Anda bukan tutor'], 403);
+        }
+
+        return response()->json([
+            'message' => 'Profil tutor berhasil diambil',
+            'data' => new \App\Http\Resources\TutorResource($tutor)
+        ]);
+    }
+
     /**
      * Update Tutor Profile
      */
@@ -30,11 +43,16 @@ class ProfileController extends Controller
             return response()->json(['message' => 'Anda bukan tutor'], 403);
         }
 
-        $tutor = $this->profileService->updateProfile($tutor, $request->validated());
+        $data = $request->validated();
+        if ($request->hasFile('avatar')) {
+            $data['avatar'] = $request->file('avatar')->store('avatars', 'public');
+        }
+
+        $tutor = $this->profileService->updateProfile($user, $tutor, $data);
 
         return response()->json([
             'message' => 'Profil tutor diperbarui',
-            'data' => new \App\Http\Resources\Tutor\TutorProfileResource($tutor)
+            'data' => new \App\Http\Resources\TutorResource($tutor)
         ]);
     }
 }
