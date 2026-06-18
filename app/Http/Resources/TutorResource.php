@@ -18,6 +18,8 @@ class TutorResource extends JsonResource
             'phone' => $this->user->phone,
             'avatar' => $this->user->avatar,
             'bio' => $this->bio,
+            'ipk' => $this->ipk,
+            'current_semester' => $this->current_semester,
             'rating_avg' => $this->rating_avg,
             'total_reviews' => $this->total_reviews,
             'total_sessions' => $this->total_sessions ?? 0,
@@ -42,8 +44,8 @@ class TutorResource extends JsonResource
                         'availability_id' => $avail->id,
                         'slot_id' => $avail->slot_id,
                         'day_of_week' => $avail->day_of_week,
-                        'start_time' => date('H:i', strtotime($avail->slot->start_time ?? '')),
-                        'end_time' => date('H:i', strtotime($avail->slot->end_time ?? '')),
+                        'start_time' => date('H:i', strtotime($avail->masterSlot->start_time ?? '')),
+                        'end_time' => date('H:i', strtotime($avail->masterSlot->end_time ?? '')),
                     ];
                 });
             }),

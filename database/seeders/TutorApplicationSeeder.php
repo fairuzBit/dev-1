@@ -15,8 +15,8 @@ class TutorApplicationSeeder extends Seeder
         $course = Course::first();
         
         // Learner 6 dan 7 kita asumsikan sedang apply jadi tutor
-        $learner6 = User::where('email', '111learner6@mhs.dinus.ac.id')->first();
-        $learner7 = User::where('email', '111learner7@mhs.dinus.ac.id')->first();
+        $learner6 = User::where('email', '111budisantoso6@mhs.dinus.ac.id')->first();
+        $learner7 = User::where('email', '111rinamelati7@mhs.dinus.ac.id')->first();
         
         if ($learner6) {
             TutorApplication::firstOrCreate(

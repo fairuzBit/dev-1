@@ -26,6 +26,7 @@ class UserController extends Controller
             'data' => $users->map(function ($user) {
                 return [
                     'id' => $user->id,
+                    'tutor_id' => $user->tutor->id ?? null,
                     'name' => $user->name,
                     'email' => $user->email,
                     'role' => $user->roles->first()->name ?? 'learner',

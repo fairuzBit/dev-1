@@ -8,7 +8,7 @@ class UserService
 {
     public function getAllUsers()
     {
-        return User::with('roles')->whereDoesntHave('roles', function ($query) {
+        return User::with(['roles', 'tutor'])->whereDoesntHave('roles', function ($query) {
             $query->where('name', 'admin');
         })->get();
     }
