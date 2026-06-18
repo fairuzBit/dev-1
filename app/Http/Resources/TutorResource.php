@@ -23,7 +23,7 @@ class TutorResource extends JsonResource
             'rating_avg' => $this->rating_avg,
             'total_reviews' => $this->total_reviews,
             'total_sessions' => $this->total_sessions ?? 0,
-            'skills' => json_decode($this->skills, true) ?? [],
+            'skills' => is_array($this->skills) ? $this->skills : (is_string($this->skills) ? json_decode($this->skills, true) : []),
             'price' => (int) $this->price,
             'portfolio_urls' => is_array($this->portfolio_urls) ? $this->portfolio_urls : [],
             'certificate_files' => collect($this->certificate_files ?? [])->map(function ($path) {
