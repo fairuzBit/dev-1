@@ -14,7 +14,7 @@ class UserSeeder extends Seeder
         $admin = User::firstOrCreate(
             ['email' => 'admin@mhs.dinus.ac.id'],
             [
-                'name' => 'Admin Utama',
+                'name' => 'Admin Baik',
                 'password' => Hash::make('password'),
                 'email_verified_at' => now(),
                 'role' => 'admin',
@@ -32,14 +32,10 @@ class UserSeeder extends Seeder
         ];
 
         for ($i = 1; $i <= 10; $i++) {
-            $name = $names[$i - 1];
-            $formattedName = str_replace(' ', '', strtolower($name));
-            $email = "111{$formattedName}{$i}@mhs.dinus.ac.id";
-            
             $user = User::firstOrCreate(
-                ['email' => $email],
+                ['email' => "111learner{$i}@mhs.dinus.ac.id"],
                 [
-                    'name' => $name,
+                    'name' => $names[$i - 1],
                     'password' => Hash::make('password'),
                     'email_verified_at' => now(),
                     'role' => $i <= 5 ? 'tutor' : 'learner',
