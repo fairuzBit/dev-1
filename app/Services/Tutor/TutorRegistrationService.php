@@ -31,6 +31,13 @@ class TutorRegistrationService
             }
         }
 
+        $certPaths = [];
+        if (isset($data['certificate_files']) && is_array($data['certificate_files'])) {
+            foreach ($data['certificate_files'] as $certFile) {
+                $certPaths[] = $certFile->store('certificates', 'public');
+            }
+        }
+
         try {
             $aiResult = $this->extractIpkWithAI($combinedText);
             
@@ -55,6 +62,7 @@ class TutorRegistrationService
                 'current_semester' => $data['current_semester'],
                 'skills' => isset($data['skills']) ? json_decode($data['skills'], true) : null,
                 'portfolio_url' => $data['portfolio_url'] ?? null,
+                'certificate_files' => !empty($certPaths) ? $certPaths : null,
             ]
         );
 
@@ -64,6 +72,7 @@ class TutorRegistrationService
             'grade' => $data['grade'] ?? 'N/A',
             'transcript_files' => $paths,
             'portfolio_url' => $data['portfolio_url'] ?? null,
+            'certificate_files' => !empty($certPaths) ? $certPaths : null,
             'status' => 'pending'
         ]);
 

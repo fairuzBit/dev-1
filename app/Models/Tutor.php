@@ -7,7 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Tutor extends Model
 {
-    protected $fillable = ['user_id', 'bio', 'ipk', 'skills', 'rating_avg', 'total_reviews', 'is_active', 'price', 'current_semester', 'portfolio_url'];
+    protected $fillable = ['user_id', 'bio', 'ipk', 'skills', 'rating_avg', 'total_reviews', 'is_active', 'price', 'current_semester', 'portfolio_url', 'certificate_files'];
+
+    protected $casts = [
+        'skills' => 'array',
+        'certificate_files' => 'array',
+    ];
 
     // Relasi balik ke User (untuk mengambil nama dan avatar)
     public function user()

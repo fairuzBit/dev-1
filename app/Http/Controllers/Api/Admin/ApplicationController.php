@@ -35,12 +35,20 @@ class ApplicationController extends Controller
                     'portfolio_url' => $app->portfolio_url,
                     'documents' => collect($app->transcript_files)->map(function ($path, $index) {
                         return [
-                            'type' => 'file',
+                            'type' => 'transcript',
                             'name' => 'Transkrip_Smt_' . ($index + 1) . '.pdf',
                             'label' => 'Transkrip Smt ' . ($index + 1),
                             'url' => asset('storage/' . $path)
                         ];
-                    })->toArray(),
+                    })->merge(collect($app->certificate_files ?? [])->map(function ($path, $index) {
+                        $ext = pathinfo($path, PATHINFO_EXTENSION);
+                        return [
+                            'type' => 'certificate',
+                            'name' => 'Sertifikat_' . ($index + 1) . '.' . $ext,
+                            'label' => 'Sertifikat ' . ($index + 1),
+                            'url' => asset('storage/' . $path)
+                        ];
+                    }))->toArray(),
                     'matkul' => $app->course ? [$app->course->name] : [],
                     'keahlian' => [],
                 ];

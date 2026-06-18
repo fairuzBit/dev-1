@@ -95,6 +95,14 @@ class ApplicationService
                 }
             }
         }
+
+        if ($app->certificate_files && is_array($app->certificate_files)) {
+            foreach ($app->certificate_files as $path) {
+                if (\Illuminate\Support\Facades\Storage::disk('public')->exists($path)) {
+                    \Illuminate\Support\Facades\Storage::disk('public')->delete($path);
+                }
+            }
+        }
         
         $app->delete();
         return true;
