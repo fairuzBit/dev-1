@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\MasterSlot;
+use Illuminate\Http\Request;
 
 /**
  * @tags Master Data
@@ -14,9 +15,15 @@ class MasterDataController extends Controller
     /**
      * Get all courses for 
      */
-    public function courses()
+    public function courses(Request $request)
     {
-        $courses = Course::orderBy('name', 'asc')->get(['id', 'name', 'code']);
+        $query = Course::query();
+
+        if ($request->has('max_semester')) {
+            $query->where('semester', '<=', $request->max_semester);
+        }
+
+        $courses = $query->orderBy('semester', 'asc')->orderBy('name', 'asc')->get(['id', 'name', 'code', 'semester']);
         
         return response()->json([
             'success' => true,

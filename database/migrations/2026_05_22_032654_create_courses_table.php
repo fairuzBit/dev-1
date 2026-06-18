@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('code')->unique();
+            $table->integer('semester')->default(1);
             $table->timestamps();
         });
     }

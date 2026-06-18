@@ -4,33 +4,44 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\Course;
-use App\Models\Skill;
 
 class CourseSeeder extends Seeder
 {
     public function run(): void
     {
-        // Seeder Mata Kuliah (Course)
-        $courses = [
-            'Basis Data', 'Pemrograman Web', 'Struktur Data', 'Kecerdasan Buatan', 'Jaringan Komputer'
+        $coursesBySemester = [
+            1 => [
+                'Kalkulus', 'Fisika', 'Dasar Pemrograman', 'Interpersonal', 
+                'Dasar Komputasi', 'Bahasa Indonesia', 'Agama Islam', 'Pengantar Teknologi Informasi'
+            ],
+            2 => [
+                'Matriks Ruang Vektor', 'Pancasila', 'Algoritma Struktur Data', 'Matematika Diskrit'
+            ],
+            3 => [
+                'Probabilitas dan Statistika', 'Logika Informatika', 'Basis Data', 
+                'Sistem Operasi', 'Kriptografi', 'Pemrograman Web', 'Penambangan Data', 'Pengembangan Perangkat Lunak'
+            ],
+            4 => [
+                'Otomata dan Teori Bahasa', 'Literasi Informasi', 'Pembelajaran Mesin', 
+                'Jaringan Komputer', 'Sistem Basis Data', 'Rangkaian Logika Digital'
+            ],
+            5 => [
+                'Keamanan Siber', 'Pemrograman Mobile', 'Rekayasa Perangkat Lunak Lanjut', 
+                'Kecerdasan Buatan', 'Manajemen Proyek TI'
+            ]
         ];
 
-        foreach ($courses as $index => $course) {
-            Course::firstOrCreate(
-                ['name' => $course],
-                ['code' => 'CS' . str_pad($index + 1, 3, '0', STR_PAD_LEFT)]
-            );
-        }
+        $codeCounter = 1;
 
-        // Seeder Keahlian (Skill)
-        // Asumsi ada tabel/model Skill (tadi sudah dibuat factory-nya)
-        if (class_exists(Skill::class)) {
-            $skills = [
-                'Laravel', 'React', 'Python', 'Machine Learning', 'C++', 'SQL'
-            ];
-            
-            foreach ($skills as $skill) {
-                Skill::firstOrCreate(['name' => $skill]);
+        foreach ($coursesBySemester as $semester => $courses) {
+            foreach ($courses as $course) {
+                Course::firstOrCreate(
+                    ['name' => $course],
+                    [
+                        'code' => 'CS' . str_pad($codeCounter++, 3, '0', STR_PAD_LEFT),
+                        'semester' => $semester
+                    ]
+                );
             }
         }
     }

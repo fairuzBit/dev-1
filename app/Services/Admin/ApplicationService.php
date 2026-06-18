@@ -22,6 +22,12 @@ class ApplicationService
             'approved_at' => now()
         ]);
         
+        if ($app->new_semester !== null && $app->user->tutor) {
+            $app->user->tutor->update([
+                'current_semester' => $app->new_semester
+            ]);
+        }
+
         $app->user->syncRoles('tutor');
         return $app;
     }

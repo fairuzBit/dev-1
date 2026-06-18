@@ -15,6 +15,7 @@ class TutorApplication extends Model
     protected $fillable = [
         'user_id',
         'course_id',
+        'new_semester',
         'grade',
         'transcript_file',
         'status',

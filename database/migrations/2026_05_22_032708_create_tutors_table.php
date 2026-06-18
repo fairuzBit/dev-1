@@ -19,6 +19,7 @@ return new class extends Migration
             $table->json('skills')->nullable();
             $table->float('rating_avg')->default(0);
             $table->integer('total_reviews')->default(0);
+            $table->integer('current_semester')->nullable();
             $table->boolean('is_active')->default(true);
             $table->decimal('price',10,2)->default(0);
             $table->timestamps();

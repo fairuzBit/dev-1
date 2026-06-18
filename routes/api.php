@@ -39,6 +39,7 @@ Route::middleware('auth:api')->group(function () {
     
     // Pendaftaran Tutor
     Route::post('/register/tutor/upload-document', [TutorRegistrationController::class, 'uploadDocument']);
+    Route::post('/tutor/upgrade-semester', [TutorRegistrationController::class, 'upgradeSemester']);
     
     // Master Data (Bisa diakses Learner & Tutor)
     Route::get('/courses', [MasterDataController::class, 'courses']);

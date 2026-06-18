@@ -34,7 +34,10 @@ class TutorRegistrationService
         // Simpan ke tabel tutors
         $tutor = Tutor::updateOrCreate(
             ['user_id' => $userId],
-            ['ipk' => $calculatedIpk]
+            [
+                'ipk' => $calculatedIpk,
+                'current_semester' => $data['current_semester']
+            ]
         );
 
         // Buat Aplikasi Tutor
@@ -42,6 +45,41 @@ class TutorRegistrationService
             'user_id' => $userId,
             'course_id' => $data['course_id'],
             'grade' => $data['grade'],
+            'transcript_file' => $path,
+            'status' => 'pending'
+        ]);
+
+        return [
+            'extracted_ipk' => $calculatedIpk,
+            'application_id' => $application->id,
+        ];
+    }
+
+    /**
+     * Upload Dokumen untuk Upgrade Semester
+     */
+    public function processUpgradeSemester(int $userId, array $data, $file)
+    {
+        $path = $file->store('transcripts', 'public');
+
+        try {
+            $text = (new Pdf())->setPdf($file->getPathname())->text();
+            $calculatedIpk = $this->extractIpkWithAI($text);
+        } catch (\Exception $e) {
+            Log::error('PDF Extraction Error: ' . $e->getMessage());
+            $calculatedIpk = 0.00;
+        }
+
+        // Update IPK terbaru
+        Tutor::updateOrCreate(
+            ['user_id' => $userId],
+            ['ipk' => $calculatedIpk]
+        );
+
+        // Buat Aplikasi Tutor (Upgrade)
+        $application = TutorApplication::create([
+            'user_id' => $userId,
+            'new_semester' => $data['new_semester'],
             'transcript_file' => $path,
             'status' => 'pending'
         ]);

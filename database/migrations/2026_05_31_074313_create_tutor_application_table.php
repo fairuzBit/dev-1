@@ -14,8 +14,9 @@ return new class extends Migration
         Schema::create('tutor_application', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
-            $table->foreignId('course_id')->constrained('courses')->cascadeOnDelete();
-            $table->string('grade');
+            $table->integer('new_semester')->nullable()->comment('For semester upgrades');
+            $table->foreignId('course_id')->nullable()->constrained('courses')->cascadeOnDelete();
+            $table->string('grade')->nullable();
             $table->string('transcript_file')->nullable();
             $table->enum('status',['pending','approved','rejected'])->default('pending');
             $table->text('admin_note')->nullable();
