@@ -70,6 +70,17 @@ class TestEndpoints extends Command
 
         $this->info("\n--- PUBLIC ROUTES ---");
         $testEndpoint('post', '/login', null, ['email' => $admin->email, 'password' => 'password']);
+        
+        $testEmail = '111user' . rand(1000, 9999) . '@mhs.dinus.ac.id';
+        $testEndpoint('post', '/register', null, [
+            'fullName' => 'Mahasiswa Baru',
+            'email' => $testEmail,
+            'password' => 'password123',
+            'password_confirmation' => 'password123',
+            'nim' => '111.2023.' . rand(1000, 9999),
+            'university' => 'Universitas Dian Nuswantoro',
+            'major' => 'Teknik Informatika',
+        ]);
 
         $this->info("\n--- ADMIN ROUTES ---");
         $testEndpoint('get', '/admin/users', $adminToken);
@@ -94,6 +105,11 @@ class TestEndpoints extends Command
         $testEndpoint('get', '/schedules', $learnerToken);
         $testEndpoint('get', '/learner/history', $learnerToken);
         $testEndpoint('get', '/learner/notification', $learnerToken);
+
+        $this->info("\n--- AUTHENTICATED SHARED ROUTES ---");
+        // Create a separate token just for logout so we don't invalidate our main test tokens
+        $logoutToken = JWTAuth::fromUser($admin);
+        $testEndpoint('post', '/logout', $logoutToken);
 
         $this->info("\nDone!");
     }
