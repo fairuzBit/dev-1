@@ -25,12 +25,12 @@ class TutorRegistrationController extends Controller
     public function uploadDocument(UploadDocumentRequest $request)
     {
 
-        $file = $request->file('transcript_file');
+        $files = $request->file('transcript_files');
         
         $result = $this->registrationService->processDocument(
             $request->user()->id, 
             $request->validated(), 
-            $file
+            $files
         );
 
         return response()->json([
@@ -46,12 +46,12 @@ class TutorRegistrationController extends Controller
      */
     public function upgradeSemester(UpgradeSemesterRequest $request)
     {
-        $file = $request->file('transcript_file');
+        $files = $request->file('transcript_files');
         
         $result = $this->registrationService->processUpgradeSemester(
             $request->user()->id, 
             $request->validated(), 
-            $file
+            $files
         );
 
         return response()->json([

@@ -15,7 +15,8 @@ class UploadDocumentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'transcript_file' => 'required|mimes:pdf|max:5120', // Maks 5MB
+            'transcript_files' => 'required|array|min:1',
+            'transcript_files.*' => 'mimes:pdf|max:5120', // Maks 5MB per file
             'course_id' => 'required|exists:courses,id',
             'current_semester' => 'required|integer|min:2|max:14',
             'portfolio_url' => 'nullable|url|max:255',

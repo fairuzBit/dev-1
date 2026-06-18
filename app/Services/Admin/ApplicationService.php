@@ -79,9 +79,12 @@ class ApplicationService
     {
         $app = TutorApplication::findOrFail($id);
         
-        // Cek apakah ada file transkrip yang perlu dihapus (jika ada logic Storage::delete)
-        if ($app->transcript_file && \Illuminate\Support\Facades\Storage::disk('public')->exists($app->transcript_file)) {
-            \Illuminate\Support\Facades\Storage::disk('public')->delete($app->transcript_file);
+        if ($app->transcript_files && is_array($app->transcript_files)) {
+            foreach ($app->transcript_files as $path) {
+                if (\Illuminate\Support\Facades\Storage::disk('public')->exists($path)) {
+                    \Illuminate\Support\Facades\Storage::disk('public')->delete($path);
+                }
+            }
         }
         
         $app->delete();

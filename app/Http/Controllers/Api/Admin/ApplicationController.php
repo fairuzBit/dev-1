@@ -33,9 +33,14 @@ class ApplicationController extends Controller
                     'status' => $app->status,
                     'created_at' => $app->created_at->format('d M Y'),
                     'portfolio_url' => $app->portfolio_url,
-                    'documents' => [
-                        ['type' => 'file', 'name' => 'Transkrip_KHS.pdf', 'label' => 'Transkrip Nilai', 'url' => asset('storage/' . $app->transcript_file)],
-                    ],
+                    'documents' => collect($app->transcript_files)->map(function ($path, $index) {
+                        return [
+                            'type' => 'file',
+                            'name' => 'Transkrip_Smt_' . ($index + 1) . '.pdf',
+                            'label' => 'Transkrip Smt ' . ($index + 1),
+                            'url' => asset('storage/' . $path)
+                        ];
+                    })->toArray(),
                     'matkul' => $app->course ? [$app->course->name] : [],
                     'keahlian' => [],
                 ];

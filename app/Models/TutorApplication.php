@@ -17,12 +17,17 @@ class TutorApplication extends Model
         'course_id',
         'new_semester',
         'grade',
-        'transcript_file',
+        'transcript_files',
+        'portfolio_url',
         'status',
         'admin_note',
         'approved_by',
-        'approved_at',
-        'portfolio_url',
+        'approved_at'
+    ];
+
+    protected $casts = [
+        'transcript_files' => 'array',
+        'approved_at' => 'datetime',
     ];
 
     // Relasi ke User (Yang mendaftar)

@@ -15,23 +15,29 @@ class TutorRegistrationService
     /**
      * Upload Dokumen dan Ekstrak IPK menggunakan AI
      */
-    public function processDocument(int $userId, array $data, $file)
+    public function processDocument(int $userId, array $data, $files)
     {
-        // Simpan file
-        $path = $file->store('transcripts', 'public');
+        $paths = [];
+        $combinedText = '';
+
+        foreach ($files as $file) {
+            $path = $file->store('transcripts', 'public');
+            $paths[] = $path;
+
+            try {
+                $combinedText .= (new Pdf())->setPdf($file->getPathname())->text() . "\n";
+            } catch (\Exception $e) {
+                Log::error('PDF Extraction Error: ' . $e->getMessage());
+            }
+        }
 
         try {
-            // Ekstrak Teks dari PDF
-            $text = (new Pdf())
-                ->setPdf($file->getPathname())
-                ->text();
-            
-            $aiResult = $this->extractIpkWithAI($text);
+            $aiResult = $this->extractIpkWithAI($combinedText);
             
             if (!$aiResult['is_transcript']) {
-                Storage::disk('public')->delete($path);
+                foreach ($paths as $p) Storage::disk('public')->delete($p);
                 throw ValidationException::withMessages([
-                    'transcript_file' => 'Dokumen yang diunggah tidak terdeteksi sebagai transkrip nilai atau KHS yang valid.'
+                    'transcript_files' => 'Satu atau lebih dokumen yang diunggah tidak terdeteksi sebagai transkrip nilai atau KHS yang valid.'
                 ]);
             }
             $calculatedIpk = $aiResult['ipk'];
@@ -39,10 +45,9 @@ class TutorRegistrationService
             throw $e;
         } catch (\Exception $e) {
             Log::error('PDF Extraction Error: ' . $e->getMessage());
-            $calculatedIpk = 0.00; // Jika gagal ekstrak teks atau AI error
+            $calculatedIpk = 0.00;
         }
 
-        // Simpan ke tabel tutors
         $tutor = Tutor::updateOrCreate(
             ['user_id' => $userId],
             [
@@ -51,12 +56,11 @@ class TutorRegistrationService
             ]
         );
 
-        // Buat Aplikasi Tutor
         $application = TutorApplication::create([
             'user_id' => $userId,
             'course_id' => $data['course_id'],
-            'grade' => $data['grade'] ?? 'N/A', // Set N/A since OCR will verify
-            'transcript_file' => $path,
+            'grade' => $data['grade'] ?? 'N/A',
+            'transcript_files' => $paths,
             'portfolio_url' => $data['portfolio_url'] ?? null,
             'status' => 'pending'
         ]);
@@ -70,18 +74,29 @@ class TutorRegistrationService
     /**
      * Upload Dokumen untuk Upgrade Semester
      */
-    public function processUpgradeSemester(int $userId, array $data, $file)
+    public function processUpgradeSemester(int $userId, array $data, $files)
     {
-        $path = $file->store('transcripts', 'public');
+        $paths = [];
+        $combinedText = '';
+
+        foreach ($files as $file) {
+            $path = $file->store('transcripts', 'public');
+            $paths[] = $path;
+
+            try {
+                $combinedText .= (new Pdf())->setPdf($file->getPathname())->text() . "\n";
+            } catch (\Exception $e) {
+                Log::error('PDF Extraction Error: ' . $e->getMessage());
+            }
+        }
 
         try {
-            $text = (new Pdf())->setPdf($file->getPathname())->text();
-            $aiResult = $this->extractIpkWithAI($text);
+            $aiResult = $this->extractIpkWithAI($combinedText);
             
             if (!$aiResult['is_transcript']) {
-                Storage::disk('public')->delete($path);
+                foreach ($paths as $p) Storage::disk('public')->delete($p);
                 throw ValidationException::withMessages([
-                    'transcript_file' => 'Dokumen yang diunggah tidak terdeteksi sebagai transkrip nilai atau KHS yang valid.'
+                    'transcript_files' => 'Satu atau lebih dokumen yang diunggah tidak terdeteksi sebagai transkrip nilai atau KHS yang valid.'
                 ]);
             }
             $calculatedIpk = $aiResult['ipk'];
@@ -92,17 +107,15 @@ class TutorRegistrationService
             $calculatedIpk = 0.00;
         }
 
-        // Update IPK terbaru
         Tutor::updateOrCreate(
             ['user_id' => $userId],
             ['ipk' => $calculatedIpk]
         );
 
-        // Buat Aplikasi Tutor (Upgrade)
         $application = TutorApplication::create([
             'user_id' => $userId,
             'new_semester' => $data['new_semester'],
-            'transcript_file' => $path,
+            'transcript_files' => $paths,
             'status' => 'pending'
         ]);
 
