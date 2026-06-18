@@ -15,7 +15,8 @@ class UpdateCourseRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'category' => 'required|string|max:255'
+            'code' => 'required|string|max:255|unique:courses,code,' . $this->route('id'),
+            'semester' => 'required|integer|min:1|max:14'
         ];
     }
 }
