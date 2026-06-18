@@ -13,6 +13,8 @@ class Review extends Model
         'booking_id',
         'rating',
         'comment',
+        'moderation_status',
+        'admin_note',
     ];
 
     // Relasi ke Transaksi/Booking yang sedang di-review

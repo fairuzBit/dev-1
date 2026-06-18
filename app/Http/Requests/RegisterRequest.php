@@ -24,9 +24,10 @@ class RegisterRequest extends FormRequest
     {
         return [
             'fullName' => 'required|string',
-            // Tambahkan starts_with:111 di sini
             'email' => 'required|email|unique:users|starts_with:111|ends_with:@mhs.dinus.ac.id', 
             'password' => 'required|min:8',
+            'nim' => 'required|string',
+            'phone' => 'required|string',
         ];
     }
 

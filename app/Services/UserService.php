@@ -17,6 +17,8 @@ class UserService
             'name' => $data['fullName'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
+            'nim' => $data['nim'] ?? null,
+            'phone' => $data['phone'] ?? null,
         ]);
 
         // 2. Pasang role menggunakan Spatie
