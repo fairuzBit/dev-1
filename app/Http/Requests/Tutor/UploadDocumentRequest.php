@@ -20,6 +20,7 @@ class UploadDocumentRequest extends FormRequest
             'course_id' => 'required|exists:courses,id',
             'current_semester' => 'required|integer|min:2|max:14',
             'portfolio_url' => 'nullable|url|max:255',
+            'skills' => 'nullable|json',
         ];
     }
 

@@ -55,6 +55,9 @@ class UserController extends Controller
                 'nim' => $user->nim,
                 'created_at' => $user->created_at->format('d M Y'),
                 'suspended_until' => $user->suspended_until,
+                'ipk' => $user->tutor->ipk ?? null,
+                'price_per_session' => $user->tutor->price ?? null,
+                'transcript_path' => $user->tutor->transcript_path ?? null,
             ]
         ]);
     }

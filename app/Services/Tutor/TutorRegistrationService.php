@@ -52,7 +52,9 @@ class TutorRegistrationService
             ['user_id' => $userId],
             [
                 'ipk' => $calculatedIpk,
-                'current_semester' => $data['current_semester']
+                'current_semester' => $data['current_semester'],
+                'skills' => isset($data['skills']) ? json_decode($data['skills'], true) : null,
+                'portfolio_url' => $data['portfolio_url'] ?? null,
             ]
         );
 

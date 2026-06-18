@@ -40,6 +40,15 @@ class ApplicationService
             ]);
         }
 
+        if ($app->course_id && $app->user->tutor) {
+            \App\Models\TutorCourse::firstOrCreate([
+                'tutor_id' => $app->user->tutor->id,
+                'course_id' => $app->course_id,
+            ], [
+                'grade' => $app->grade ?? 'N/A'
+            ]);
+        }
+
         Notification::create([
             'user_id' => $app->user_id,
             'type' => 'application',
