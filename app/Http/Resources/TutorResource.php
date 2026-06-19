@@ -44,7 +44,7 @@ class TutorResource extends JsonResource
             }),
             
             'available_slots' => $this->whenLoaded('availabilitySlots', function () {
-                return $this->availabilitySlots->map(function ($avail) {
+                return $this->availabilitySlots->filter(fn($avail) => $avail->is_active)->map(function ($avail) {
                     return [
                         'availability_id' => $avail->id,
                         'slot_id' => $avail->slot_id,
@@ -52,7 +52,7 @@ class TutorResource extends JsonResource
                         'start_time' => date('H:i', strtotime($avail->masterSlot->start_time ?? '')),
                         'end_time' => date('H:i', strtotime($avail->masterSlot->end_time ?? '')),
                     ];
-                });
+                })->values();
             }),
         ];
     }

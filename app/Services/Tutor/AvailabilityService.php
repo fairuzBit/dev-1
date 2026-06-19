@@ -30,7 +30,8 @@ class AvailabilityService
             $newSlots[] = AvailabilitySlot::create([
                 'tutor_id' => $tutorId,
                 'day_of_week' => $slot['day_of_week'],
-                'master_slot_id' => $slot['master_slot_id']
+                'slot_id' => $slot['master_slot_id'],
+                'is_active' => $slot['is_active'] ?? true,
             ]);
         }
 

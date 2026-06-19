@@ -51,10 +51,10 @@ class AvailabilityController extends Controller
                     $time = $start . ' - ' . $end;
                 }
 
-                return [
                     'id' => $slot->id,
                     'day' => $dayMap[$slot->day_of_week] ?? $slot->day_of_week,
                     'time' => $time,
+                    'status' => $slot->is_active ? 'AVAILABLE' : 'NON AVAILABLE',
                 ];
             })
         ]);
