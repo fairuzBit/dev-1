@@ -25,6 +25,8 @@ class ProfileController extends Controller
             return response()->json(['message' => 'Anda bukan tutor'], 403);
         }
 
+        $tutor->loadMissing('courses.course', 'availabilitySlots.masterSlot');
+
         return response()->json([
             'message' => 'Profil tutor berhasil diambil',
             'data' => new \App\Http\Resources\TutorResource($tutor)
@@ -49,6 +51,7 @@ class ProfileController extends Controller
         }
 
         $tutor = $this->profileService->updateProfile($user, $tutor, $data);
+        $tutor->loadMissing('courses.course', 'availabilitySlots.masterSlot');
 
         return response()->json([
             'message' => 'Profil tutor diperbarui',
