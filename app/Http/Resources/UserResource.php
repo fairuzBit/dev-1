@@ -18,7 +18,8 @@ class UserResource extends JsonResource
             'nim' => $this->nim,
             'phone' => $this->phone,
             'avatar' => $this->avatar ? asset('storage/' . $this->avatar) : null,
-            'role' => $this->roles->first()->name ?? 'learner',
+            'role' => $this->roles->last()->name ?? 'learner', // Backward compatibility for single role usage (last usually gets the most recently assigned, e.g. tutor)
+            'roles' => $this->roles->pluck('name'), // Return all roles as an array
         ];
     }
 }
