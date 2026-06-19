@@ -15,6 +15,7 @@ class TutorResource extends JsonResource
             'user_id' => $this->user_id,
             'name' => $this->user->name,
             'email' => $this->user->email,
+            'nim' => $this->user->nim,
             'phone' => $this->user->phone,
             'avatar' => $this->user->avatar ? asset('storage/' . $this->user->avatar) : null,
             'bio' => $this->bio,
