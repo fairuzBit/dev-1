@@ -26,8 +26,8 @@ class ReviewSeeder extends Seeder
                     'status' => 'completed',
                     'payment_status' => 'paid',
                     'total_price' => $tutor2->price,
-                    'service_fee' => 5000,
-                    'grand_total' => $tutor2->price + 5000,
+                    'service_fee' => 1000,
+                    'grand_total' => $tutor2->price + 1000,
                     'payment_method' => 'bank_transfer',
                     'payment_code' => 'PAY-COMPLETED-DUMMY-' . $i
                 ]);

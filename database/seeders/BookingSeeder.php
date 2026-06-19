@@ -34,8 +34,8 @@ class BookingSeeder extends Seeder
             'status' => 'completed',
             'payment_status' => 'paid',
             'total_price' => $tutor1->price,
-            'service_fee' => 5000,
-            'grand_total' => $tutor1->price + 5000,
+            'service_fee' => 1000,
+            'grand_total' => $tutor1->price + 1000,
             'payment_method' => 'bank_transfer',
             'payment_code' => 'PAY-COMPLETED-123'
         ]);
@@ -59,8 +59,8 @@ class BookingSeeder extends Seeder
             'status' => 'accepted',
             'payment_status' => 'paid',
             'total_price' => $tutor2->price,
-            'service_fee' => 5000,
-            'grand_total' => $tutor2->price + 5000,
+            'service_fee' => 1000,
+            'grand_total' => $tutor2->price + 1000,
             'payment_method' => 'ewallet',
             'payment_code' => 'PAY-PAID-456'
         ]);
@@ -82,8 +82,8 @@ class BookingSeeder extends Seeder
             'status' => 'pending',
             'payment_status' => 'paid',
             'total_price' => $tutor3->price,
-            'service_fee' => 5000,
-            'grand_total' => $tutor3->price + 5000,
+            'service_fee' => 1000,
+            'grand_total' => $tutor3->price + 1000,
             'payment_method' => 'qris',
             'payment_code' => 'PAY-PENDING-789'
         ]);
@@ -104,8 +104,8 @@ class BookingSeeder extends Seeder
             'status' => 'pending',
             'payment_status' => 'unpaid',
             'total_price' => $tutor2->price,
-            'service_fee' => 5000,
-            'grand_total' => $tutor2->price + 5000,
+            'service_fee' => 1000,
+            'grand_total' => $tutor2->price + 1000,
         ]);
         
         BookingSlot::create([
@@ -124,8 +124,8 @@ class BookingSeeder extends Seeder
             'status' => 'rejected', // Ditolak oleh Admin
             'payment_status' => 'refunded', // Dana dikembalikan karena ditolak
             'total_price' => $tutor1->price,
-            'service_fee' => 5000,
-            'grand_total' => $tutor1->price + 5000,
+            'service_fee' => 1000,
+            'grand_total' => $tutor1->price + 1000,
         ]);
         
         BookingSlot::create([
