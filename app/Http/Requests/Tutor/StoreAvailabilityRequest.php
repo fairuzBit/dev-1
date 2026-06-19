@@ -14,7 +14,7 @@ class StoreAvailabilityRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'slots' => 'required|array',
+            'slots' => 'present|array',
             'slots.*.day_of_week' => 'required|in:Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday',
             'slots.*.master_slot_id' => 'required|exists:master_slots,id'
         ];

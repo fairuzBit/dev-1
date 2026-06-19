@@ -36,6 +36,7 @@ class BookingController extends Controller
                 return [
                     'id' => $b->id,
                     'learner' => $b->learner->name ?? 'Unknown',
+                    'course' => $b->course->name ?? 'Unknown',
                     'date' => $b->booking_date,
                     'status' => $b->status,
                     'total_price' => $b->total_price,

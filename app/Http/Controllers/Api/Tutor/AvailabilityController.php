@@ -46,11 +46,12 @@ class AvailabilityController extends Controller
                 
                 $time = null;
                 if ($slot->masterSlot) {
-                    $start = date('H.i', strtotime($slot->masterSlot->start_time));
-                    $end = date('H.i', strtotime($slot->masterSlot->end_time));
+                    $start = date('H:i', strtotime($slot->masterSlot->start_time));
+                    $end = date('H:i', strtotime($slot->masterSlot->end_time));
                     $time = $start . ' - ' . $end;
                 }
 
+                return [
                     'id' => $slot->id,
                     'day' => $dayMap[$slot->day_of_week] ?? $slot->day_of_week,
                     'time' => $time,
@@ -71,11 +72,16 @@ class AvailabilityController extends Controller
             return response()->json(['message' => 'Anda bukan tutor'], 403);
         }
 
-        $newSlots = $this->availabilityService->storeAvailabilities($tutorId, $request->slots);
+        try {
+            $newSlots = $this->availabilityService->storeAvailabilities($tutorId, $request->slots);
 
-        return response()->json([
-            'message' => 'Jadwal berhasil diperbarui',
-            'data' => $newSlots
-        ]);
+            return response()->json([
+                'message' => 'Jadwal berhasil diperbarui',
+                'data' => $newSlots
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Availability save error: ' . $e->getMessage(), ['trace' => $e->getTraceAsString(), 'payload' => $request->all()]);
+            return response()->json(['message' => 'Server Error: ' . $e->getMessage()], 500);
+        }
     }
 }
