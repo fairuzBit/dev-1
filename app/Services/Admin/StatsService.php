@@ -6,7 +6,7 @@ use App\Models\User;
 use App\Models\Booking;
 use App\Models\Review;
 use App\Models\TutorApplication;
-use App\Models\ModerationLog;
+
 use App\Models\Tutor;
 use App\Models\Course;
 
@@ -51,7 +51,7 @@ class StatsService
             'active_complaints' => $activeComplaints,
             'pending_verifications' => TutorApplication::where('status', 'pending')->count(),
             'new_complaints' => $activeComplaints, // Alias
-            'aktivitas_terbaru' => ModerationLog::latest()->take(5)->get(),
+            'aktivitas_terbaru' => [], // Belum diimplementasikan logikanya
             'top_tutors' => $topTutors,
             'mata_kuliah_populer' => $popularCourses,
             
