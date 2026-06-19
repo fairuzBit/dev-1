@@ -80,6 +80,7 @@ Route::middleware('auth:api')->group(function () {
         Route::get('/tutor/schedules', [TutorBookingController::class, 'schedules']);
         Route::get('/tutor/history', [TutorBookingController::class, 'history']);
         
+        Route::get('/tutor/reviews/summary', [ReviewController::class, 'summary']);
         Route::get('/tutor/reviews', [ReviewController::class, 'index']);
         Route::get('/tutor/notifications', [TutorNotificationController::class, 'index']);
         

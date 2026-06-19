@@ -16,8 +16,8 @@ class TutorDiscoverySeeder extends Seeder
         $course1 = Course::firstOrCreate(['code' => 'CS101'], ['name' => 'Dasar Pemrograman']);
         $course2 = Course::firstOrCreate(['code' => 'BD101'], ['name' => 'Basis Data']);
 
-        // 2. Ambil user tutor dari UserSeeder lama
-        $tutorUser = User::where('email', '111tutor@mhs.dinus.ac.id')->first();
+        // 2. Ambil user tutor dari UserSeeder
+        $tutorUser = User::where('email', '111andiwijaya1@mhs.dinus.ac.id')->first();
         
         if ($tutorUser) {
             $tutorProfile = Tutor::firstOrCreate(
@@ -44,14 +44,7 @@ class TutorDiscoverySeeder extends Seeder
         }
 
         // 4. Tutor Kedua
-        $tutorUser2 = User::firstOrCreate(
-            ['email' => '111tutor2@mhs.dinus.ac.id'],
-            [
-                'name' => 'Budi Santoso',
-                'password' => \Illuminate\Support\Facades\Hash::make('password')
-            ]
-        );
-        $tutorUser2->assignRole('tutor'); 
+        $tutorUser2 = User::where('email', '111sitinurhaliza2@mhs.dinus.ac.id')->first();
 
         $tutorProfile2 = Tutor::firstOrCreate(
             ['user_id' => $tutorUser2->id],

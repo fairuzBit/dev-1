@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             
-            $table->enum('type', ['booking', 'payment', 'session_reminder', 'application', 'system']);
+            $table->enum('type', ['booking', 'payment', 'session_reminder', 'application', 'system', 'review']);
             $table->string('title');
             $table->text('message');
             $table->string('action_url')->nullable(); // Link jika notifikasi diklik, misal: '/jadwal-belajar'

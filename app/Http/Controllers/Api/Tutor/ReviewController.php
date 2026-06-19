@@ -26,18 +26,50 @@ class ReviewController extends Controller
             return response()->json(['message' => 'Anda bukan tutor'], 403);
         }
 
-        $reviews = $this->reviewService->getReviews($tutorId);
+        $rating = $request->query('rating');
+        $perPage = $request->query('per_page', 10);
+
+        $reviews = $this->reviewService->getReviews($tutorId, $rating, $perPage);
+        $summary = $this->reviewService->getReviewsSummary($tutorId);
+
+        $reviews->getCollection()->transform(function ($review) {
+            $sessionTime = '-';
+            if ($review->booking && $review->booking->bookingSlots->isNotEmpty()) {
+                $slots = $review->booking->bookingSlots->map(function($s) {
+                    return $s->masterSlot->start_time ?? '';
+                })->filter()->sort()->values();
+                if ($slots->count() > 0) {
+                    $sessionTime = $slots->first();
+                }
+            }
+
+            return [
+                'id' => $review->id,
+                'rating' => $review->rating,
+                'comment' => $review->comment,
+                'learner' => [
+                    'id' => $review->booking->learner->id ?? null,
+                    'name' => $review->booking->learner->name ?? 'Unknown',
+                    'avatar' => $review->booking->learner->avatar ?? null,
+                ],
+                'course' => [
+                    'id' => $review->booking->course->id ?? null,
+                    'name' => $review->booking->course->name ?? 'Unknown',
+                ],
+                'created_at' => $review->created_at->format('Y-m-d H:i:s'),
+                'session_time' => $sessionTime
+            ];
+        });
 
         return response()->json([
-            'data' => $reviews->map(function ($review) {
-                return [
-                    'id' => $review->id,
-                    'rating' => $review->rating,
-                    'comment' => $review->comment,
-                    'learner' => $review->booking->learner->name ?? 'Unknown',
-                    'date' => $review->created_at->format('Y-m-d')
-                ];
-            })
+            'data' => $reviews->items(),
+            'meta' => [
+                'current_page' => $reviews->currentPage(),
+                'last_page' => $reviews->lastPage(),
+                'per_page' => $reviews->perPage(),
+                'total' => $reviews->total(),
+            ],
+            'summary' => $summary
         ]);
     }
 }

@@ -11,10 +11,10 @@ class NotificationSeeder extends Seeder
 {
     public function run(): void
     {
-        $learner8 = User::where('email', '111learner8@mhs.dinus.ac.id')->first();
-        $learner9 = User::where('email', '111learner9@mhs.dinus.ac.id')->first();
-        $learner10 = User::where('email', '111learner10@mhs.dinus.ac.id')->first();
-        $tutor1 = User::where('email', '111learner1@mhs.dinus.ac.id')->first();
+        $learner8 = User::where('email', '111dewilestari8@mhs.dinus.ac.id')->first();
+        $learner9 = User::where('email', '111agusprayitno9@mhs.dinus.ac.id')->first();
+        $learner10 = User::where('email', '111ninakarina10@mhs.dinus.ac.id')->first();
+        $tutor1 = User::where('email', '111andiwijaya1@mhs.dinus.ac.id')->first();
 
         // 1. Pembayaran Pending (Learner 8, Unpaid)
         $unpaidBooking = Booking::where('learner_id', $learner8->id ?? 0)->where('payment_status', 'unpaid')->first();
@@ -119,10 +119,34 @@ class NotificationSeeder extends Seeder
 
             Notification::create([
                 'user_id' => $tutor1->id,
-                'type' => 'system',
+                'type' => 'review',
                 'title' => 'Ulasan Bintang 5 Baru!',
                 'message' => 'Anda mendapatkan ulasan bintang 5 dari Learner 8: "Tutornya sangat pintar!". Pertahankan!',
                 'is_read' => false,
+            ]);
+
+            Notification::create([
+                'user_id' => $tutor1->id,
+                'type' => 'payment',
+                'title' => 'Pencairan Dana Berhasil',
+                'message' => 'Dana dari sesi mengajar Anda telah berhasil ditransfer ke rekening tujuan.',
+                'is_read' => true,
+            ]);
+
+            Notification::create([
+                'user_id' => $tutor1->id,
+                'type' => 'session_reminder',
+                'title' => 'Pengingat Sesi Mengajar',
+                'message' => 'Sesi mengajar Anda dengan Learner 8 akan dimulai dalam 30 menit. Siapkan materi Anda!',
+                'is_read' => false,
+            ]);
+
+            Notification::create([
+                'user_id' => $tutor1->id,
+                'type' => 'system',
+                'title' => 'Pembaruan Sistem KonekDin',
+                'message' => 'KonekDin telah diperbarui dengan fitur-fitur baru. Silakan pelajari fitur ulasan dan profil!',
+                'is_read' => true,
             ]);
         }
     }
