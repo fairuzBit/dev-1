@@ -143,10 +143,10 @@ class NotificationSeeder extends Seeder
 
             Notification::create([
                 'user_id' => $tutor1->id,
-                'type' => 'system',
-                'title' => 'Pembaruan Sistem KonekDin',
-                'message' => 'KonekDin telah diperbarui dengan fitur-fitur baru. Silakan pelajari fitur ulasan dan profil!',
-                'is_read' => true,
+                'type' => 'session_reminder',
+                'title' => 'Pengingat H-1 Sesi Mengajar',
+                'message' => 'Halo! Jangan lupa, Anda memiliki jadwal mengajar besok dengan Learner 8. Pastikan persiapan materi sudah lengkap ya!',
+                'is_read' => false,
             ]);
         }
     }
