@@ -21,7 +21,7 @@ class BookingService
         
         // Harga total = Harga Tutor x Jumlah Slot yang dipilih
         $totalPrice = $tutor->price * count($slotIds);
-        $serviceFee = 15000;
+        $serviceFee = 1000;
         $grandTotal = $totalPrice + $serviceFee;
 
         // Pakai DB Transaction agar jika gagal di tengah jalan, data di-rollback

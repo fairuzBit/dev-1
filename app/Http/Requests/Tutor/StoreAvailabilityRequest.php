@@ -19,4 +19,27 @@ class StoreAvailabilityRequest extends FormRequest
             'slots.*.master_slot_id' => 'required|exists:master_slots,id'
         ];
     }
+
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            $tutor = $this->user()->tutor;
+            
+            if ($tutor && (!$tutor->price || $tutor->price <= 0)) {
+                $hasActiveSlot = false;
+                $slots = $this->input('slots', []);
+                
+                foreach ($slots as $slot) {
+                    if (isset($slot['is_active']) && $slot['is_active']) {
+                        $hasActiveSlot = true;
+                        break;
+                    }
+                }
+                
+                if ($hasActiveSlot) {
+                    $validator->errors()->add('slots', 'Anda harus mengatur tarif mengajar di profil Anda terlebih dahulu sebelum dapat membuka jadwal ketersediaan.');
+                }
+            }
+        });
+    }
 }
