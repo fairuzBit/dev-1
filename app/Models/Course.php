@@ -13,5 +13,11 @@ class Course extends Model
     {
         return $this->hasMany(TutorCourse::class);
     }
+
+    // Relasi ke Booking
+    public function bookings()
+    {
+        return $this->hasMany(Booking::class);
+    }
 }
 
