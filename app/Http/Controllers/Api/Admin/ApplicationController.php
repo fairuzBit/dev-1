@@ -32,7 +32,6 @@ class ApplicationController extends Controller
                     'avatar' => $app->user->avatar ?? null,
                     'status' => $app->status,
                     'created_at' => $app->created_at->format('d M Y'),
-                    'portfolio_urls' => $app->portfolio_urls ?? [],
                     'documents' => collect($app->transcript_files)->map(function ($path, $index) {
                         return [
                             'type' => 'transcript',
@@ -57,7 +56,7 @@ class ApplicationController extends Controller
                         ];
                     }))->toArray(),
                     'matkul' => $app->course ? [$app->course->name] : [],
-                    'keahlian' => [],
+                    'keahlian' => ($app->user && $app->user->tutor && $app->user->tutor->bio) ? [$app->user->tutor->bio] : [],
                 ];
             })
         ]);
