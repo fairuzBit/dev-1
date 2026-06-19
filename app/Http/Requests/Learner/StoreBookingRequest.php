@@ -25,8 +25,8 @@ class StoreBookingRequest extends FormRequest
         return [
             'tutor_id' => 'required|exists:tutors,id',
             'course_id' => 'required|exists:courses,id',
-            'booking_date' => 'required|date',
-            'slot_ids' => 'required|array',
+            'booking_date' => 'required|date|after_or_equal:today|before_or_equal:+30 days',
+            'slot_ids' => 'required|array|min:1',
             'slot_ids.*' => 'exists:master_slots,id'
         ];
     }

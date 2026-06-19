@@ -42,7 +42,20 @@ class BookingService
             ]);
 
             // 2. Masukkan Rincian Slot dan Cek Jadwal Bentrok
+            $dayOfWeek = date('l', strtotime($data['booking_date']));
+
             foreach ($slotIds as $slotId) {
+                // Cek apakah tutor membuka slot ini di hari tersebut
+                $isAvailable = \App\Models\AvailabilitySlot::where('tutor_id', $tutor->id)
+                    ->where('day_of_week', $dayOfWeek)
+                    ->where('slot_id', $slotId)
+                    ->where('is_active', true)
+                    ->exists();
+                    
+                if (!$isAvailable) {
+                    throw new Exception("Gagal. Tutor tidak tersedia pada waktu yang Anda pilih.");
+                }
+
                 // Cek apakah slot ini di hari itu sudah dipesan orang lain (dan belum di-cancel)
                 $isBooked = BookingSlot::whereHas('booking', function ($q) use ($tutor, $data) {
                     $q->where('tutor_id', $tutor->id)
