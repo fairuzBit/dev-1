@@ -51,14 +51,21 @@ class UserController extends Controller
         $documents = [];
 
         if ($user->tutor) {
-            // Masukkan transcript jika ada
-            if (isset($user->tutor->transcript_path)) {
-                $documents[] = [
-                    'type'  => 'transcript',
-                    'label' => 'Transkrip Nilai',
-                    'name'  => 'Transkrip',
-                    'url'   => url('storage/' . $user->tutor->transcript_path)
-                ];
+            // Masukkan transcript dari TutorApplication terbaru
+            $latestApp = \App\Models\TutorApplication::where('user_id', $user->id)
+                ->whereNotNull('transcript_files')
+                ->latest()
+                ->first();
+
+            if ($latestApp && !empty($latestApp->transcript_files)) {
+                foreach ($latestApp->transcript_files as $path) {
+                    $documents[] = [
+                        'type'  => 'transcript',
+                        'label' => 'Transkrip Nilai',
+                        'name'  => basename($path),
+                        'url'   => url('storage/' . $path)
+                    ];
+                }
             }
 
             // Masukkan semua sertifikat
