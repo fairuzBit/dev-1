@@ -31,7 +31,7 @@ Route::post('/login', [AuthController::class, 'login']);
 use App\Http\Controllers\Api\MasterDataController;
 
 // ROUTE PRIVATE
-Route::middleware('auth:api')->group(function () {
+Route::middleware(['auth:api', 'suspended'])->group(function () {
     
     // Fitur User Terautentikasi
     Route::get('/user', [AuthController::class, 'getUser']);

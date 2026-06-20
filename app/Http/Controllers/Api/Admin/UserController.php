@@ -3,9 +3,10 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Services\Admin\UserService;
+use App\Http\Requests\Admin\SuspendUserRequest;
+use App\Models\TutorApplication;
 use App\Models\User;
+use App\Services\Admin\UserService;
 
 /**
  * @tags Admin Users
@@ -34,8 +35,9 @@ class UserController extends Controller
                     'avatar' => $user->avatar,
                     'created_at' => $user->created_at->format('d M Y'),
                     'suspended_until' => $user->suspended_until,
+                    'suspended_end' => $user->suspended_until && $user->suspended_until->isFuture() ? $user->suspended_until->translatedFormat('d F Y H:i') : null,
                 ];
-            })
+            }),
         ]);
     }
 
@@ -43,8 +45,8 @@ class UserController extends Controller
     {
         // Eager loading yang benar
         $user = User::with([
-            'roles', 
-            'tutor.courses.course' // Hanya courses yang merupakan relasi tabel (ke TutorCourse)
+            'roles',
+            'tutor.courses.course', // Hanya courses yang merupakan relasi tabel (ke TutorCourse)
         ])->findOrFail($id);
 
         // 2. Siapkan array documents
@@ -52,43 +54,43 @@ class UserController extends Controller
 
         if ($user->tutor) {
             // Masukkan transcript dari TutorApplication terbaru
-            $latestApp = \App\Models\TutorApplication::where('user_id', $user->id)
+            $latestApp = TutorApplication::where('user_id', $user->id)
                 ->whereNotNull('transcript_files')
                 ->latest()
                 ->first();
 
-            if ($latestApp && !empty($latestApp->transcript_files)) {
+            if ($latestApp && ! empty($latestApp->transcript_files)) {
                 foreach ($latestApp->transcript_files as $path) {
                     $documents[] = [
-                        'type'  => 'transcript',
+                        'type' => 'transcript',
                         'label' => 'Transkrip Nilai',
-                        'name'  => basename($path),
-                        'url'   => url('storage/' . $path)
+                        'name' => basename($path),
+                        'url' => url('storage/'.$path),
                     ];
                 }
             }
 
             // Masukkan semua sertifikat
-            if (!empty($user->tutor->certificate_files)) {
+            if (! empty($user->tutor->certificate_files)) {
                 foreach ($user->tutor->certificate_files as $cert) {
                     $documents[] = [
-                        'type'  => 'certificate',
+                        'type' => 'certificate',
                         'label' => 'Sertifikat',
-                        'name'  => basename($cert),
-                        'url'   => url('storage/' . $cert)
+                        'name' => basename($cert),
+                        'url' => url('storage/'.$cert),
                     ];
                 }
             }
 
             // Masukkan semua portofolio
-            if (!empty($user->tutor->portfolio_urls)) {
+            if (! empty($user->tutor->portfolio_urls)) {
                 foreach ($user->tutor->portfolio_urls as $port) {
                     $documents[] = [
-                        'type'  => 'link',
+                        'type' => 'link',
                         'label' => 'Portofolio',
                         'value' => $port,
-                        'name'  => $port,
-                        'url'   => $port
+                        'name' => $port,
+                        'url' => $port,
                     ];
                 }
             }
@@ -111,20 +113,21 @@ class UserController extends Controller
                 'faculty' => $user->faculty ?? 'Ilmu Komputer',
                 'created_at' => $user->created_at->format('d M Y'),
                 'suspended_until' => $user->suspended_until,
-                
+                'suspended_end' => $user->suspended_until && $user->suspended_until->isFuture() ? $user->suspended_until->translatedFormat('d F Y H:i') : null,
+
                 // Field Khusus Tutor
                 'ipk' => $user->tutor->ipk ?? null,
                 'price_per_session' => $user->tutor->price ?? null,
-                'courses' => $user->tutor && $user->tutor->courses 
+                'courses' => $user->tutor && $user->tutor->courses
                     ? $user->tutor->courses->map(function ($tc) {
                         return $tc->course->name ?? '';
                     })->filter()->values()
                     : [],
-                'skills' => $user->tutor && $user->tutor->skills 
-                    ? $user->tutor->skills 
+                'skills' => $user->tutor && $user->tutor->skills
+                    ? $user->tutor->skills
                     : [],
                 'documents' => $documents,
-            ]
+            ],
         ]);
     }
 
@@ -135,7 +138,7 @@ class UserController extends Controller
         return response()->json(['message' => 'Pengguna berhasil diblokir/dihapus']);
     }
 
-    public function suspend(\App\Http\Requests\Admin\SuspendUserRequest $request, $id)
+    public function suspend(SuspendUserRequest $request, $id)
     {
         $duration = $request->validated('duration');
         $user = $this->userService->suspendUser($id, $duration);
@@ -143,7 +146,7 @@ class UserController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Pengguna berhasil disuspend',
-            'data' => $user
+            'data' => $user,
         ]);
     }
 
@@ -154,7 +157,7 @@ class UserController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Suspend pengguna berhasil dicabut',
-            'data' => $user
+            'data' => $user,
         ]);
     }
 }

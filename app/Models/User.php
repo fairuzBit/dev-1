@@ -2,18 +2,19 @@
 
 namespace App\Models;
 
+use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-//use Laravel\Sanctum\HasApiTokens; // 1. Tambahkan ini untuk Sanctum
-use Spatie\Permission\Traits\HasRoles; // 2. Tambahkan ini untuk Spatie
+// use Laravel\Sanctum\HasApiTokens; // 1. Tambahkan ini untuk Sanctum
+use Illuminate\Notifications\Notifiable; // 2. Tambahkan ini untuk Spatie
+use Spatie\Permission\Traits\HasRoles;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
+    /** @use HasFactory<UserFactory> */
     // 3. Masukkan Trait tersebut ke dalam class
-    use HasFactory, Notifiable, HasRoles;
+    use HasFactory, HasRoles, Notifiable;
 
     protected $guard_name = 'api';
 
@@ -30,7 +31,7 @@ class User extends Authenticatable implements JWTSubject
         'nim',
         'phone',
         'suspended_until',
-        'role'
+        'role',
     ];
 
     /**
@@ -39,7 +40,7 @@ class User extends Authenticatable implements JWTSubject
      * @var list<string>
      */
     protected $hidden = [
-        'password'
+        'password',
     ];
 
     /**
@@ -52,33 +53,36 @@ class User extends Authenticatable implements JWTSubject
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'suspended_until' => 'immutable_datetime',
         ];
     }
+
     /**
      * Get the attributes that should be cast.
      *
      * @return mixed
      */
-    
-    public function getJWTIdentifier(){
+    public function getJWTIdentifier()
+    {
         return $this->getKey();
-        
+
     }
+
     /**
      * Get the attributes that should be cast.
      *
      * @return array
      */
-    public function getJWTCustomClaims(){
+    public function getJWTCustomClaims()
+    {
         return [];
     }
-        /**
+
+    /**
      * Relasi ke profil Tutor
      */
     public function tutor()
     {
         return $this->hasOne(Tutor::class);
     }
-
-
 }
