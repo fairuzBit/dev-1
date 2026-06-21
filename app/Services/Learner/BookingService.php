@@ -228,4 +228,25 @@ class BookingService
             throw $e;
         }
     }
+
+    /**
+     * Membatalkan pesanan yang belum dibayar
+     */
+    public function cancelBooking($learnerId, $bookingId)
+    {
+        $booking = Booking::where('learner_id', $learnerId)
+            ->where('id', $bookingId)
+            ->firstOrFail();
+
+        if ($booking->payment_status !== 'unpaid' || !in_array($booking->status, ['pending', 'accepted'])) {
+            throw new Exception("Pesanan tidak dapat dibatalkan karena status tidak valid atau sudah dibayar.");
+        }
+
+        $booking->update([
+            'status' => 'cancelled'
+        ]);
+
+        return $booking;
+    }
 }
+

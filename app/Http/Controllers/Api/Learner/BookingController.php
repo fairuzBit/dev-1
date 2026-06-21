@@ -152,4 +152,24 @@ class BookingController extends Controller
             ], 400);
         }
     }
+
+    // Endpoint: PATCH /api/learner/bookings/{id}/cancel
+    public function cancel(Request $request, $id)
+    {
+        try {
+            $booking = $this->bookingService->cancelBooking($request->user()->id, $id);
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Pesanan berhasil dibatalkan',
+                'data' => new BookingResource($booking)
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 400);
+        }
+    }
 }
+

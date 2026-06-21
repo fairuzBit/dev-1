@@ -41,7 +41,12 @@ class BookingController extends Controller
                     'date' => $b->booking_date,
                     'status' => $b->status,
                     'total_price' => $b->total_price,
-                    'slots' => $b->bookingSlots->map(fn($bs) => $bs->masterSlot->time_range ?? '')
+                    'slots' => $b->bookingSlots->map(function($bs) {
+                        if (!$bs->masterSlot) return '';
+                        $start = substr($bs->masterSlot->start_time, 0, 5);
+                        $end = substr($bs->masterSlot->end_time, 0, 5);
+                        return "$start - $end";
+                    })->filter()->values()
                 ];
             })
         ]);
