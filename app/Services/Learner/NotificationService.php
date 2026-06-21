@@ -9,6 +9,7 @@ class NotificationService
     public function getUserNotifications(int $userId)
     {
         return Notification::where('user_id', $userId)
+            ->where('role', 'learner')
             ->orderBy('created_at', 'desc')
             ->get();
     }

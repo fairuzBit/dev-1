@@ -36,9 +36,9 @@ class CourseSeeder extends Seeder
         foreach ($coursesBySemester as $semester => $courses) {
             foreach ($courses as $course) {
                 Course::firstOrCreate(
-                    ['name' => $course],
+                    ['code' => 'CS' . str_pad($codeCounter++, 3, '0', STR_PAD_LEFT)],
                     [
-                        'code' => 'CS' . str_pad($codeCounter++, 3, '0', STR_PAD_LEFT),
+                        'name' => $course,
                         'semester' => $semester
                     ]
                 );

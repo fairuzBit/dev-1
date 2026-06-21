@@ -51,6 +51,7 @@ class ApplicationService
 
         Notification::create([
             'user_id' => $app->user_id,
+            'role' => 'learner',
             'type' => 'application',
             'title' => $title,
             'message' => $message,
@@ -75,6 +76,7 @@ class ApplicationService
         
         Notification::create([
             'user_id' => $app->user_id,
+            'role' => 'learner',
             'type' => 'application',
             'title' => $title,
             'message' => "Mohon maaf, pengajuan Anda ditolak.{$reasonText}",

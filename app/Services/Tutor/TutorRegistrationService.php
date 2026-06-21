@@ -81,6 +81,16 @@ class TutorRegistrationService
             $applicationIds[] = $application->id;
         }
 
+        // Tambahkan Notifikasi Pengajuan Pending
+        \App\Models\Notification::create([
+            'user_id' => $userId,
+            'role' => 'learner',
+            'type' => 'application',
+            'title' => 'Pengajuan Tutor Sedang Diproses',
+            'message' => 'Berkas pengajuan Anda sebagai Tutor telah kami terima dan sedang dalam proses verifikasi oleh Admin. Harap tunggu.',
+            'is_read' => false,
+        ]);
+
         return [
             'extracted_ipk' => $calculatedIpk,
             'application_ids' => $applicationIds,
@@ -133,6 +143,16 @@ class TutorRegistrationService
             'new_semester' => $data['new_semester'],
             'transcript_files' => $paths,
             'status' => 'pending'
+        ]);
+
+        // Tambahkan Notifikasi Pengajuan Pending
+        \App\Models\Notification::create([
+            'user_id' => $userId,
+            'role' => 'learner',
+            'type' => 'application',
+            'title' => 'Pengajuan Naik Semester Diproses',
+            'message' => 'Berkas pengajuan naik semester Anda telah kami terima dan sedang dalam proses verifikasi oleh Admin. Harap tunggu.',
+            'is_read' => false,
         ]);
 
         return [

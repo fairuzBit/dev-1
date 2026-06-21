@@ -15,7 +15,10 @@ class TutorDiscoveryService
             ->withCount(['bookings as total_sessions' => function ($q) {
                 $q->where('status', 'completed');
             }])
-            ->where('is_active', true);
+            ->where('is_active', true)
+            ->whereHas('availabilitySlots', function ($q) {
+                $q->where('is_active', true);
+            });
 
         // Filter berdasarkan pencarian (nama tutor)
         if (!empty($filters['search'])) {

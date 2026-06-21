@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('notifications', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
-            
+            $table->string('role')->default('learner');
             $table->enum('type', ['booking', 'payment', 'session_reminder', 'application', 'system', 'review']);
             $table->string('title');
             $table->text('message');

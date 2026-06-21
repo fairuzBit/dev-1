@@ -110,6 +110,7 @@ Route::middleware(['auth:api', 'suspended'])->group(function () {
         Route::delete('/admin/moderation/reviews/{id}', [ModerationController::class, 'destroyReview']);
         Route::patch('/admin/moderation/reviews/{id}/process', [ModerationController::class, 'processReview']);
         Route::patch('/admin/moderation/reviews/{id}/resolve', [ModerationController::class, 'resolveReview']);
+        Route::get('/admin/moderation/logs', [ModerationController::class, 'logs']);
 
         // Payments
         Route::get('/admin/payments', [PaymentController::class, 'index']);
