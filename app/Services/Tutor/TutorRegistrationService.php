@@ -23,12 +23,6 @@ class TutorRegistrationService
         foreach ($files as $file) {
             $path = $file->store('transcripts', 'public');
             $paths[] = $path;
-
-            try {
-                $combinedText .= (new Pdf())->setPdf($file->getPathname())->text() . "\n";
-            } catch (\Exception $e) {
-                Log::error('PDF Extraction Error: ' . $e->getMessage());
-            }
         }
 
         $certPaths = [];
@@ -108,12 +102,6 @@ class TutorRegistrationService
         foreach ($files as $file) {
             $path = $file->store('transcripts', 'public');
             $paths[] = $path;
-
-            try {
-                $combinedText .= (new Pdf())->setPdf($file->getPathname())->text() . "\n";
-            } catch (\Exception $e) {
-                Log::error('PDF Extraction Error: ' . $e->getMessage());
-            }
         }
 
         try {
