@@ -39,4 +39,14 @@ class NotificationController extends Controller
             'message' => 'Notifikasi ditandai sudah dibaca'
         ]);
     }
+
+    public function markAllAsRead(Request $request)
+    {
+        $this->notificationService->markAllAsRead($request->user()->id);
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Semua notifikasi ditandai sudah dibaca'
+        ]);
+    }
 }

@@ -27,4 +27,15 @@ class NotificationService
         
         return $notification;
     }
+
+    public function markAllAsRead(int $userId)
+    {
+        Notification::where('user_id', $userId)
+            ->where('role', 'learner')
+            ->where('is_read', false)
+            ->update([
+                'is_read' => true,
+                'read_at' => now()
+            ]);
+    }
 }
