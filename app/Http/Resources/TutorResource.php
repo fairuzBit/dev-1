@@ -55,6 +55,51 @@ class TutorResource extends JsonResource
                 })->values();
             }),
             
+            'documents' => $this->when(true, function () {
+                $documents = [];
+                
+                $latestApp = \App\Models\TutorApplication::where('user_id', $this->user_id)
+                    ->whereNotNull('transcript_files')
+                    ->latest()
+                    ->first();
+
+                if ($latestApp && ! empty($latestApp->transcript_files)) {
+                    foreach ($latestApp->transcript_files as $path) {
+                        $documents[] = [
+                            'type' => 'transcript',
+                            'label' => 'Transkrip Nilai',
+                            'name' => basename($path),
+                            'url' => url('storage/'.$path),
+                        ];
+                    }
+                }
+
+                if (! empty($this->certificate_files)) {
+                    foreach ($this->certificate_files as $cert) {
+                        $documents[] = [
+                            'type' => 'certificate',
+                            'label' => 'Sertifikat',
+                            'name' => basename($cert),
+                            'url' => url('storage/'.$cert),
+                        ];
+                    }
+                }
+
+                if (! empty($this->portfolio_urls)) {
+                    foreach ($this->portfolio_urls as $port) {
+                        $documents[] = [
+                            'type' => 'link',
+                            'label' => 'Portofolio',
+                            'value' => $port,
+                            'name' => $port,
+                            'url' => $port,
+                        ];
+                    }
+                }
+                
+                return $documents;
+            }),
+
             'reviews' => $this->whenLoaded('reviews', function () {
                 return $this->reviews->filter(fn($review) => $review->moderation_status === 'approved' || $review->moderation_status === 'pending')->map(function ($review) {
                     return [
