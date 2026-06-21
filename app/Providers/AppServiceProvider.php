@@ -40,6 +40,14 @@ class AppServiceProvider extends ServiceProvider
     if (app()->environment('production')) {
         URL::forceScheme('https');
     }
+
+    if (!file_exists(public_path('storage'))) {
+        try {
+            \Illuminate\Support\Facades\Artisan::call('storage:link');
+        } catch (\Exception $e) {
+            // Fail silently
+        }
+    }
 }
 
 
