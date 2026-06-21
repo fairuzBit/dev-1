@@ -51,6 +51,11 @@ class AuthController extends Controller
             ]);
         }
         
+        $userExists = \App\Models\User::where('email', $credentials['email'])->exists();
+        if (!$userExists) {
+            return response()->json(['message' => 'Akun tidak terdaftar, silakan daftar terlebih dahulu'], 401);
+        }
+
         return response()->json(['message' => 'Email atau Password salah'], 401);
     }
 
