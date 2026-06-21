@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\AvailabilitySlot;
 use App\Services\Tutor\AvailabilityService;
 use App\Http\Requests\Tutor\StoreAvailabilityRequest;
+use Illuminate\Support\Facades\Log;
 
 /**
  * @tags Tutor Availability
@@ -72,6 +73,10 @@ class AvailabilityController extends Controller
             return response()->json(['message' => 'Anda bukan tutor'], 403);
         }
 
+        if (empty($request->user()->phone)) {
+            return response()->json(['message' => 'Silakan lengkapi nomor telepon di profil Anda sebelum mengatur jadwal ketersediaan.'], 422);
+        }
+
         try {
             $newSlots = $this->availabilityService->storeAvailabilities($tutorId, $request->slots);
 
@@ -80,7 +85,7 @@ class AvailabilityController extends Controller
                 'data' => $newSlots
             ]);
         } catch (\Exception $e) {
-            \Log::error('Availability save error: ' . $e->getMessage(), ['trace' => $e->getTraceAsString(), 'payload' => $request->all()]);
+            Log::error('Availability save error: ' . $e->getMessage(), ['trace' => $e->getTraceAsString(), 'payload' => $request->all()]);
             return response()->json(['message' => 'Server Error: ' . $e->getMessage()], 500);
         }
     }

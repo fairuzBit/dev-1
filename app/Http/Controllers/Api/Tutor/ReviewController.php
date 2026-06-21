@@ -34,12 +34,18 @@ class ReviewController extends Controller
 
         $reviews->getCollection()->transform(function ($review) {
             $sessionTime = '-';
+            $sessionDate = $review->booking->booking_date ?? '-';
             if ($review->booking && $review->booking->bookingSlots->isNotEmpty()) {
-                $slots = $review->booking->bookingSlots->map(function($s) {
-                    return $s->masterSlot->start_time ?? '';
-                })->filter()->sort()->values();
-                if ($slots->count() > 0) {
-                    $sessionTime = $slots->first();
+                $masterSlots = $review->booking->bookingSlots->map(function($s) {
+                    return $s->masterSlot;
+                })->filter()->sortBy('start_time')->values();
+                if ($masterSlots->count() > 0) {
+                    $first = $masterSlots->first();
+                    $last = $masterSlots->last();
+                    
+                    $start = $first->start_time ? substr($first->start_time, 0, 5) : '';
+                    $end = $last->end_time ? substr($last->end_time, 0, 5) : '';
+                    $sessionTime = $start && $end ? "$start - $end" : '-';
                 }
             }
 
@@ -57,6 +63,7 @@ class ReviewController extends Controller
                     'name' => $review->booking->course->name ?? 'Unknown',
                 ],
                 'created_at' => $review->created_at->format('Y-m-d H:i:s'),
+                'session_date' => $sessionDate,
                 'session_time' => $sessionTime
             ];
         });

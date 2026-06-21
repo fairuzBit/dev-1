@@ -29,13 +29,14 @@ class BookingController extends Controller
             return response()->json(['message' => 'Anda bukan tutor'], 403);
         }
 
-        $bookings = $this->bookingService->getPendingBookings($tutorId);
+        $bookings = $this->bookingService->getSchedules($tutorId);
 
         return response()->json([
             'data' => $bookings->map(function ($b) {
                 return [
                     'id' => $b->id,
                     'learner' => $b->learner->name ?? 'Unknown',
+                    'learner_phone' => $b->learner->phone ?? null,
                     'course' => $b->course->name ?? 'Unknown',
                     'date' => $b->booking_date,
                     'status' => $b->status,
@@ -44,16 +45,6 @@ class BookingController extends Controller
                 ];
             })
         ]);
-    }
-
-    public function schedules(Request $request)
-    {
-        $tutorId = $request->user()->tutor->id ?? null;
-        if (!$tutorId) return response()->json(['message' => 'Anda bukan tutor'], 403);
-
-        $schedules = $this->bookingService->getSchedules($tutorId);
-
-        return response()->json(['data' => $schedules]);
     }
 
     public function history(Request $request)

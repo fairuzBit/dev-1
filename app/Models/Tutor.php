@@ -36,4 +36,9 @@ class Tutor extends Model
     {
         return $this->hasMany(AvailabilitySlot::class);
     }
+
+    public function reviews()
+    {
+        return $this->hasManyThrough(Review::class, Booking::class);
+    }
 }

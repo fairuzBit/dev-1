@@ -76,8 +76,6 @@ Route::middleware(['auth:api', 'suspended'])->group(function () {
         
         Route::get('/tutor/bookings', [TutorBookingController::class, 'index']);
 
-        
-        Route::get('/tutor/schedules', [TutorBookingController::class, 'schedules']);
         Route::get('/tutor/history', [TutorBookingController::class, 'history']);
         
         Route::get('/tutor/reviews/summary', [ReviewController::class, 'summary']);

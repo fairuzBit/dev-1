@@ -44,7 +44,7 @@ class TutorDiscoveryService
      */
     public function getTutorById(int $id)
     {
-        return Tutor::with(['user', 'courses.course', 'availabilitySlots.masterSlot'])
+        return Tutor::with(['user', 'courses.course', 'availabilitySlots.masterSlot', 'reviews.booking.learner'])
             ->withCount(['bookings as total_sessions' => function ($q) {
                 $q->where('status', 'completed');
             }])
