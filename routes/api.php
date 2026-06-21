@@ -60,6 +60,7 @@ Route::middleware(['auth:api', 'suspended'])->group(function () {
         Route::patch('/learner/bookings/{id}/pay', [BookingController::class, 'pay']); // Bayar pesanan
         Route::patch('/learner/bookings/{id}/simulate-payment', [BookingController::class, 'simulatePaymentSuccess']); // Klik OK di pop-up VA
         Route::post('/learner/bookings/{id}/reviews', [BookingController::class, 'submitReview']); // Beri Ulasan
+        Route::patch('/learner/bookings/{id}/cancel', [BookingController::class, 'cancel']); // Batalkan pesanan
         Route::get('/schedules', [BookingController::class, 'schedules']);
         Route::get('/learner/history', [BookingController::class, 'history']);
         Route::get('/learner/notification', [NotificationController::class, 'index']);
