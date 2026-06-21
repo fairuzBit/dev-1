@@ -23,6 +23,13 @@ class TutorRegistrationService
         foreach ($files as $file) {
             $path = $file->store('transcripts', 'public');
             $paths[] = $path;
+
+            try {
+                $absolutePath = Storage::disk('public')->path($path);
+                $combinedText .= Pdf::getText($absolutePath) . "\n";
+            } catch (\Exception $e) {
+                Log::warning('PDF text extraction failed for file: ' . $path . ' — ' . $e->getMessage());
+            }
         }
 
         $certPaths = [];
@@ -102,6 +109,13 @@ class TutorRegistrationService
         foreach ($files as $file) {
             $path = $file->store('transcripts', 'public');
             $paths[] = $path;
+
+            try {
+                $absolutePath = Storage::disk('public')->path($path);
+                $combinedText .= Pdf::getText($absolutePath) . "\n";
+            } catch (\Exception $e) {
+                Log::warning('PDF text extraction failed for file: ' . $path . ' — ' . $e->getMessage());
+            }
         }
 
         try {
@@ -154,8 +168,6 @@ class TutorRegistrationService
      */
     private function extractIpkWithAI(string $text): array
     {
-        return ['is_transcript' => true, 'ipk' => 3.75];
-
         $apiKey = env('GEMINI_API_KEY');
         
         if (!$apiKey) {
