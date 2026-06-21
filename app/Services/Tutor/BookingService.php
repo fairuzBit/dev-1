@@ -46,4 +46,11 @@ class BookingService
         $booking->update(['status' => 'rejected']);
         return $booking;
     }
+
+    public function completeBooking(int $tutorId, int $bookingId)
+    {
+        $booking = Booking::where('id', $bookingId)->where('tutor_id', $tutorId)->firstOrFail();
+        $booking->update(['status' => 'completed']);
+        return $booking;
+    }
 }

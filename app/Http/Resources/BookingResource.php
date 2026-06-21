@@ -38,6 +38,7 @@ class BookingResource extends JsonResource
                 return $this->bookingSlots->map(function ($bs) {
                     return [
                         'id' => $bs->id,
+                        'slot_id' => $bs->slot_id,
                         'start_time' => date('H:i', strtotime($bs->start_time)), // Menghapus detik, dari 08:00:00 jadi 08:00
                         'end_time' => date('H:i', strtotime($bs->end_time)),
                         'code' => $bs->masterSlot->code ?? null, // Mengambil nama sesi dari tabel MasterSlot

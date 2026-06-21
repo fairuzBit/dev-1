@@ -29,7 +29,8 @@ class StatsService
                     'id' => $tutor->id,
                     'name' => $tutor->user->name ?? 'Unknown',
                     'rating' => round($tutor->rating_avg, 1),
-                    'sessions' => $tutor->completed_sessions_count
+                    'sessions' => $tutor->completed_sessions_count,
+                    'avatar' => ($tutor->user && $tutor->user->avatar) ? (str_starts_with($tutor->user->avatar, 'data:image') || str_starts_with($tutor->user->avatar, 'http') ? $tutor->user->avatar : asset('storage/' . $tutor->user->avatar)) : null,
                 ];
             });
 
