@@ -29,7 +29,7 @@ class ApplicationController extends Controller
                     'user_id' => $app->user_id,
                     'name' => $app->user->name ?? 'Unknown',
                     'email' => $app->user->email ?? 'Unknown',
-                    'avatar' => $app->user->avatar ?? null,
+                    'avatar' => ($app->user && $app->user->avatar) ? (str_starts_with($app->user->avatar, 'data:image') || str_starts_with($app->user->avatar, 'http') ? $app->user->avatar : asset('storage/' . $app->user->avatar)) : null,
                     'status' => $app->status,
                     'created_at' => $app->created_at->format('d M Y'),
                     'documents' => collect($app->transcript_files)->map(function ($path, $index) {

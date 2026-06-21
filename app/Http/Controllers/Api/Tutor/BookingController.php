@@ -59,7 +59,41 @@ class BookingController extends Controller
 
         $history = $this->bookingService->getHistory($tutorId);
 
-        return response()->json(['data' => $history]);
+        return response()->json([
+            'data' => $history->map(function ($h) {
+                $statusLabel = 'SELESAI';
+                if ($h->status === 'rejected') $statusLabel = 'DITOLAK';
+                if ($h->status === 'cancelled') $statusLabel = 'DIBATALKAN';
+
+                return [
+                    'id' => $h->id,
+                    'title' => $h->learner->name ?? 'Learner',
+                    'detail' => ($h->course->name ?? 'Mata Kuliah') . ' - ' . ($h->booking_date ? $h->booking_date->format('d M Y') : '-'),
+                    'status' => $statusLabel
+                ];
+            })
+        ]);
     }
 
+    /**
+     * Mark booking as completed (Tutor action)
+     */
+    public function complete(Request $request, $id)
+    {
+        $tutorId = $request->user()->tutor->id ?? null;
+        if (!$tutorId) return response()->json(['message' => 'Anda bukan tutor'], 403);
+
+        try {
+            $booking = $this->bookingService->completeBooking($tutorId, $id);
+            return response()->json([
+                'success' => true,
+                'message' => 'Sesi belajar berhasil diselesaikan',
+                'data' => $booking
+            ]);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json(['message' => 'Sesi belajar tidak ditemukan.'], 404);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Gagal menyelesaikan sesi: ' . $e->getMessage()], 500);
+        }
+    }
 }
