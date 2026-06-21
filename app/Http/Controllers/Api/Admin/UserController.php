@@ -118,6 +118,7 @@ class UserController extends Controller
                 // Field Khusus Tutor
                 'ipk' => $user->tutor->ipk ?? null,
                 'price_per_session' => $user->tutor->price ?? null,
+                'bio' => $user->tutor->bio ?? null,
                 'courses' => $user->tutor && $user->tutor->courses
                     ? $user->tutor->courses->map(function ($tc) {
                         return $tc->course->name ?? '';
