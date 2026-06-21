@@ -11,7 +11,8 @@ class BookingService
     {
         return Booking::with(['learner', 'bookingSlots.masterSlot'])
             ->where('tutor_id', $tutorId)
-            ->whereIn('status', ['pending', 'paid'])
+            ->where('status', 'pending')
+            ->where('payment_status', 'paid')
             ->get();
     }
 

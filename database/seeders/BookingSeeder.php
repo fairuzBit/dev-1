@@ -169,5 +169,32 @@ class BookingSeeder extends Seeder
             'start_time' => $masterSlots[0]->start_time,
             'end_time' => $masterSlots[0]->end_time
         ]);
+
+        // Booking 6: Completed (For Testing "Beri Ulasan")
+        $bookingForReview = Booking::firstOrCreate(
+            [
+                'learner_id' => $learner8->id, // Dewi Lestari
+                'tutor_id' => $tutor3->id,     // Reza Rahadian
+                'status' => 'completed',
+            ],
+            [
+                'course_id' => $tutor3->courses->first()->course_id ?? 1,
+                'booking_date' => Carbon::yesterday()->toDateString(),
+                'payment_status' => 'paid',
+                'total_price' => $tutor3->price,
+                'service_fee' => 1000,
+                'grand_total' => $tutor3->price + 1000,
+                'payment_method' => 'bank_transfer',
+                'payment_code' => 'PAY-COMPLETED-REVIEW-TEST'
+            ]
+        );
+        
+        BookingSlot::firstOrCreate([
+            'booking_id' => $bookingForReview->id,
+            'slot_id' => $masterSlots[1]->id,
+        ], [
+            'start_time' => $masterSlots[1]->start_time,
+            'end_time' => $masterSlots[1]->end_time
+        ]);
     }
 }

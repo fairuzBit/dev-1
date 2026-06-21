@@ -17,7 +17,7 @@ class TutorResource extends JsonResource
             'email' => $this->user->email,
             'nim' => $this->user->nim,
             'phone' => $this->user->phone,
-            'avatar' => $this->user->avatar ? asset('storage/' . $this->user->avatar) : null,
+            'avatar' => $this->user->avatar ? (str_starts_with($this->user->avatar, 'data:image') ? $this->user->avatar : asset('storage/' . $this->user->avatar)) : null,
             'bio' => $this->bio,
             'ipk' => $this->ipk,
             'current_semester' => $this->current_semester,
@@ -64,7 +64,7 @@ class TutorResource extends JsonResource
                         'created_at' => $review->created_at->toIso8601String(),
                         'learner' => [
                             'name' => $review->booking->learner->name ?? 'Learner',
-                            'avatar' => $review->booking->learner->avatar ? asset('storage/' . $review->booking->learner->avatar) : null,
+                            'avatar' => $review->booking->learner->avatar ? (str_starts_with($review->booking->learner->avatar, 'data:image') ? $review->booking->learner->avatar : asset('storage/' . $review->booking->learner->avatar)) : null,
                         ],
                     ];
                 });
