@@ -15,26 +15,28 @@ class ReviewSeeder extends Seeder
         $learner7 = User::where('email', '111rinamelati7@mhs.dinus.ac.id')->first();
         $tutor2 = Tutor::find(2) ?? Tutor::first();
         
-        // Buat 4 booking dummy berstatus completed agar kita punya total 5 booking completed
         if ($learner7 && $tutor2) {
             for($i = 1; $i <= 4; $i++) {
-                Booking::create([
-                    'learner_id' => $learner7->id,
-                    'tutor_id' => $tutor2->id,
-                    'course_id' => $tutor2->courses->first()->course_id ?? 1,
-                    'booking_date' => now()->subDays($i)->toDateString(),
-                    'status' => 'completed',
-                    'payment_status' => 'paid',
-                    'total_price' => $tutor2->price,
-                    'service_fee' => 1000,
-                    'grand_total' => $tutor2->price + 1000,
-                    'payment_method' => 'bank_transfer',
-                    'payment_code' => 'PAY-COMPLETED-DUMMY-' . $i
-                ]);
+                Booking::firstOrCreate(
+                    [
+                        'learner_id' => $learner7->id,
+                        'tutor_id' => $tutor2->id,
+                        'payment_code' => 'PAY-COMPLETED-DUMMY-' . $i
+                    ],
+                    [
+                        'course_id' => $tutor2->courses->first()->course_id ?? 1,
+                        'booking_date' => now()->subDays($i)->toDateString(),
+                        'status' => 'completed',
+                        'payment_status' => 'paid',
+                        'total_price' => $tutor2->price,
+                        'service_fee' => 1000,
+                        'grand_total' => $tutor2->price + 1000,
+                        'payment_method' => 'bank_transfer',
+                    ]
+                );
             }
         }
 
-        // Ambil semua booking yang sudah selesai (sekarang harusnya ada 5)
         $bookings = Booking::where('status', 'completed')->get();
 
         $reviewsData = [
@@ -55,7 +57,6 @@ class ReviewSeeder extends Seeder
                 'moderation_status' => $data['moderation_status']
             ]);
             
-            // Update average rating tutor
             $tutor = $booking->tutor;
             $tutor->update([
                 'rating_avg' => Review::whereHas('booking', function($q) use ($tutor) {

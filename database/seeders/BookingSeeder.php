@@ -8,7 +8,6 @@ use App\Models\Tutor;
 use App\Models\Booking;
 use App\Models\BookingSlot;
 use App\Models\MasterSlot;
-use App\Models\Review;
 use Carbon\Carbon;
 
 class BookingSeeder extends Seeder
@@ -19,120 +18,155 @@ class BookingSeeder extends Seeder
         $learner9 = User::where('email', '111agusprayitno9@mhs.dinus.ac.id')->first();
         $learner10 = User::where('email', '111ninakarina10@mhs.dinus.ac.id')->first();
 
-        $tutors = Tutor::take(3)->get(); // Ambil 3 tutor pertama
+        $tutors = Tutor::take(3)->get();
         $masterSlots = MasterSlot::take(3)->get(); 
         
         if (!$learner8 || $tutors->isEmpty()) return;
 
-        // 1. Booking Selesai & Di-review (Oleh Learner 8 ke Tutor 1)
         $tutor1 = $tutors[0];
-        $bookingCompleted = Booking::create([
-            'learner_id' => $learner8->id,
-            'tutor_id' => $tutor1->id,
-            'course_id' => $tutor1->courses->first()->course_id ?? 1,
-            'booking_date' => Carbon::yesterday()->toDateString(),
-            'status' => 'completed',
-            'payment_status' => 'paid',
-            'total_price' => $tutor1->price,
-            'service_fee' => 1000,
-            'grand_total' => $tutor1->price + 1000,
-            'payment_method' => 'bank_transfer',
-            'payment_code' => 'PAY-COMPLETED-123'
-        ]);
+        $bookingCompleted = Booking::firstOrCreate(
+            [
+                'learner_id' => $learner8->id,
+                'tutor_id' => $tutor1->id,
+                'status' => 'completed',
+            ],
+            [
+                'course_id' => $tutor1->courses->first()->course_id ?? 1,
+                'booking_date' => Carbon::yesterday()->toDateString(),
+                'payment_status' => 'paid',
+                'total_price' => $tutor1->price,
+                'service_fee' => 1000,
+                'grand_total' => $tutor1->price + 1000,
+                'payment_method' => 'bank_transfer',
+                'payment_code' => 'PAY-COMPLETED-123'
+            ]
+        );
         
         foreach($masterSlots as $slot) {
-            BookingSlot::create([
-                'booking_id' => $bookingCompleted->id,
-                'slot_id' => $slot->id,
-                'start_time' => $slot->start_time,
-                'end_time' => $slot->end_time
-            ]);
+            BookingSlot::firstOrCreate(
+                [
+                    'booking_id' => $bookingCompleted->id,
+                    'slot_id' => $slot->id,
+                ],
+                [
+                    'start_time' => $slot->start_time,
+                    'end_time' => $slot->end_time
+                ]
+            );
         }
 
-        // 2. Booking Aktif / Disetujui (Di-ACC oleh Admin) (Oleh Learner 9 ke Tutor 2)
         $tutor2 = $tutors[1];
-        $bookingPaid = Booking::create([
-            'learner_id' => $learner9->id,
-            'tutor_id' => $tutor2->id,
-            'course_id' => $tutor2->courses->first()->course_id ?? 1,
-            'booking_date' => Carbon::tomorrow()->toDateString(),
-            'status' => 'accepted',
-            'payment_status' => 'paid',
-            'total_price' => $tutor2->price,
-            'service_fee' => 1000,
-            'grand_total' => $tutor2->price + 1000,
-            'payment_method' => 'ewallet',
-            'payment_code' => 'PAY-PAID-456'
-        ]);
+        $bookingPaid = Booking::firstOrCreate(
+            [
+                'learner_id' => $learner9->id,
+                'tutor_id' => $tutor2->id,
+                'status' => 'accepted',
+            ],
+            [
+                'course_id' => $tutor2->courses->first()->course_id ?? 1,
+                'booking_date' => Carbon::tomorrow()->toDateString(),
+                'payment_status' => 'paid',
+                'total_price' => $tutor2->price,
+                'service_fee' => 1000,
+                'grand_total' => $tutor2->price + 1000,
+                'payment_method' => 'ewallet',
+                'payment_code' => 'PAY-PAID-456'
+            ]
+        );
         
-        BookingSlot::create([
-            'booking_id' => $bookingPaid->id,
-            'slot_id' => $masterSlots->first()->id,
-            'start_time' => $masterSlots->first()->start_time,
-            'end_time' => $masterSlots->first()->end_time
-        ]);
+        BookingSlot::firstOrCreate(
+            [
+                'booking_id' => $bookingPaid->id,
+                'slot_id' => $masterSlots->first()->id,
+            ],
+            [
+                'start_time' => $masterSlots->first()->start_time,
+                'end_time' => $masterSlots->first()->end_time
+            ]
+        );
 
-        // 3. Booking Pending / Menunggu ACC Admin (Oleh Learner 10 ke Tutor 3)
         $tutor3 = $tutors[2];
-        $bookingPending = Booking::create([
-            'learner_id' => $learner10->id,
-            'tutor_id' => $tutor3->id,
-            'course_id' => $tutor3->courses->first()->course_id ?? 1,
-            'booking_date' => Carbon::now()->addDays(2)->toDateString(),
-            'status' => 'pending',
-            'payment_status' => 'paid',
-            'total_price' => $tutor3->price,
-            'service_fee' => 1000,
-            'grand_total' => $tutor3->price + 1000,
-            'payment_method' => 'qris',
-            'payment_code' => 'PAY-PENDING-789'
-        ]);
+        $bookingPending = Booking::firstOrCreate(
+            [
+                'learner_id' => $learner10->id,
+                'tutor_id' => $tutor3->id,
+                'status' => 'pending',
+                'payment_status' => 'paid',
+            ],
+            [
+                'course_id' => $tutor3->courses->first()->course_id ?? 1,
+                'booking_date' => Carbon::now()->addDays(2)->toDateString(),
+                'total_price' => $tutor3->price,
+                'service_fee' => 1000,
+                'grand_total' => $tutor3->price + 1000,
+                'payment_method' => 'qris',
+                'payment_code' => 'PAY-PENDING-789'
+            ]
+        );
         
-        BookingSlot::create([
-            'booking_id' => $bookingPending->id,
-            'slot_id' => $masterSlots->last()->id,
-            'start_time' => $masterSlots->last()->start_time,
-            'end_time' => $masterSlots->last()->end_time
-        ]);
+        BookingSlot::firstOrCreate(
+            [
+                'booking_id' => $bookingPending->id,
+                'slot_id' => $masterSlots->last()->id,
+            ],
+            [
+                'start_time' => $masterSlots->last()->start_time,
+                'end_time' => $masterSlots->last()->end_time
+            ]
+        );
         
-        // 4. Booking Unpaid (Oleh Learner 8 ke Tutor 2)
-        $bookingUnpaid = Booking::create([
-            'learner_id' => $learner8->id,
-            'tutor_id' => $tutor2->id,
-            'course_id' => $tutor2->courses->first()->course_id ?? 1,
-            'booking_date' => Carbon::now()->addDays(3)->toDateString(),
-            'status' => 'pending',
-            'payment_status' => 'unpaid',
-            'total_price' => $tutor2->price,
-            'service_fee' => 1000,
-            'grand_total' => $tutor2->price + 1000,
-        ]);
+        $bookingUnpaid = Booking::firstOrCreate(
+            [
+                'learner_id' => $learner8->id,
+                'tutor_id' => $tutor2->id,
+                'status' => 'pending',
+                'payment_status' => 'unpaid',
+            ],
+            [
+                'course_id' => $tutor2->courses->first()->course_id ?? 1,
+                'booking_date' => Carbon::now()->addDays(3)->toDateString(),
+                'total_price' => $tutor2->price,
+                'service_fee' => 1000,
+                'grand_total' => $tutor2->price + 1000,
+            ]
+        );
         
-        BookingSlot::create([
-            'booking_id' => $bookingUnpaid->id,
-            'slot_id' => $masterSlots->last()->id,
-            'start_time' => $masterSlots->last()->start_time,
-            'end_time' => $masterSlots->last()->end_time
-        ]);
+        BookingSlot::firstOrCreate(
+            [
+                'booking_id' => $bookingUnpaid->id,
+                'slot_id' => $masterSlots->last()->id,
+            ],
+            [
+                'start_time' => $masterSlots->last()->start_time,
+                'end_time' => $masterSlots->last()->end_time
+            ]
+        );
 
-        // 5. Booking Ditolak / Rejected oleh Admin (Oleh Learner 10 ke Tutor 1)
-        $bookingRejected = Booking::create([
-            'learner_id' => $learner10->id,
-            'tutor_id' => $tutor1->id,
-            'course_id' => $tutor1->courses->first()->course_id ?? 1,
-            'booking_date' => Carbon::now()->addDays(4)->toDateString(),
-            'status' => 'rejected', // Ditolak oleh Admin
-            'payment_status' => 'refunded', // Dana dikembalikan karena ditolak
-            'total_price' => $tutor1->price,
-            'service_fee' => 1000,
-            'grand_total' => $tutor1->price + 1000,
-        ]);
+        $bookingRejected = Booking::firstOrCreate(
+            [
+                'learner_id' => $learner10->id,
+                'tutor_id' => $tutor1->id,
+                'status' => 'rejected',
+            ],
+            [
+                'course_id' => $tutor1->courses->first()->course_id ?? 1,
+                'booking_date' => Carbon::now()->addDays(4)->toDateString(),
+                'payment_status' => 'refunded',
+                'total_price' => $tutor1->price,
+                'service_fee' => 1000,
+                'grand_total' => $tutor1->price + 1000,
+            ]
+        );
         
-        BookingSlot::create([
-            'booking_id' => $bookingRejected->id,
-            'slot_id' => $masterSlots->first()->id,
-            'start_time' => $masterSlots->first()->start_time,
-            'end_time' => $masterSlots->first()->end_time
-        ]);
+        BookingSlot::firstOrCreate(
+            [
+                'booking_id' => $bookingRejected->id,
+                'slot_id' => $masterSlots->first()->id,
+            ],
+            [
+                'start_time' => $masterSlots->first()->start_time,
+                'end_time' => $masterSlots->first()->end_time
+            ]
+        );
     }
 }
