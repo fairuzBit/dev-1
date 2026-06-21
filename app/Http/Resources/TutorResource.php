@@ -54,6 +54,21 @@ class TutorResource extends JsonResource
                     ];
                 })->values();
             }),
+            
+            'reviews' => $this->whenLoaded('reviews', function () {
+                return $this->reviews->filter(fn($review) => $review->moderation_status === 'approved' || $review->moderation_status === 'pending')->map(function ($review) {
+                    return [
+                        'id' => $review->id,
+                        'rating' => $review->rating,
+                        'comment' => $review->comment,
+                        'created_at' => $review->created_at->toIso8601String(),
+                        'learner' => [
+                            'name' => $review->booking->learner->name ?? 'Learner',
+                            'avatar' => $review->booking->learner->avatar ? asset('storage/' . $review->booking->learner->avatar) : null,
+                        ],
+                    ];
+                });
+            }),
         ];
     }
 }
