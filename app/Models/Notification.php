@@ -20,6 +20,11 @@ class Notification extends Model
         'read_at',
     ];
 
+    protected $casts = [
+        'is_read' => 'boolean',
+        'read_at' => 'datetime',
+    ];
+
     // Relasi ke User yang menerima notifikasi
     public function user()
     {
