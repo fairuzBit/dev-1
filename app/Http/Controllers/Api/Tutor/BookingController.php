@@ -65,11 +65,21 @@ class BookingController extends Controller
                 if ($h->status === 'rejected') $statusLabel = 'DITOLAK';
                 if ($h->status === 'cancelled') $statusLabel = 'DIBATALKAN';
 
+                // Format slot waktu: "10:20 - 11:10"
+                $slots = $h->bookingSlots->map(function ($bs) {
+                    if (!$bs->masterSlot) return null;
+                    return substr($bs->masterSlot->start_time, 0, 5) . ' - ' . substr($bs->masterSlot->end_time, 0, 5);
+                })->filter()->values();
+
                 return [
-                    'id' => $h->id,
-                    'title' => $h->learner->name ?? 'Learner',
-                    'detail' => ($h->course->name ?? 'Mata Kuliah') . ' - ' . ($h->booking_date ? $h->booking_date->format('d M Y') : '-'),
-                    'status' => $statusLabel
+                    'id'          => $h->id,
+                    'title'       => $h->learner->name ?? 'Learner',
+                    'course'      => $h->course->name ?? 'Mata Kuliah',
+                    'booking_date'=> $h->booking_date ? $h->booking_date->format('d M Y') : '-',
+                    'slots'       => $slots,
+                    'status'      => $statusLabel,
+                    'has_review'  => $h->review !== null,
+                    'review_id'   => $h->review->id ?? null,
                 ];
             })
         ]);
