@@ -17,6 +17,11 @@ class BookingService
     public function createBooking($learnerId, $data)
     {
         $tutor = Tutor::findOrFail($data['tutor_id']);
+        
+        if (!$tutor->is_active) {
+            throw new Exception("Gagal membuat pesanan. Tutor yang bersangkutan sedang tidak aktif menerima pemesanan saat ini.");
+        }
+
         $slotIds = $data['slot_ids']; // Bentuknya array, contoh: [1, 2]
         
         // Harga total = Harga Tutor x Jumlah Slot yang dipilih

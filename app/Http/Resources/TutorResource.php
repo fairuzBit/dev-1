@@ -20,6 +20,7 @@ class TutorResource extends JsonResource
             'avatar' => $this->user->avatar ? (str_starts_with($this->user->avatar, 'data:image') ? $this->user->avatar : asset('storage/' . $this->user->avatar)) : null,
             'bio' => $this->bio,
             'ipk' => $this->ipk,
+            'is_active' => (bool) $this->is_active,
             'current_semester' => $this->current_semester,
             'rating_avg' => $this->rating_avg,
             'total_reviews' => $this->total_reviews,
