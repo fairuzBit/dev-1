@@ -65,6 +65,7 @@ Route::middleware(['auth:api', 'suspended'])->group(function () {
         Route::get('/learner/history', [BookingController::class, 'history']);
         Route::get('/learner/notification', [NotificationController::class, 'index']);
         Route::patch('/learner/notification/{id}/read', [NotificationController::class, 'markAsRead']);
+        Route::post('/learner/notifications/read-all', [NotificationController::class, 'markAllAsRead']);
 
     });
     
@@ -83,6 +84,7 @@ Route::middleware(['auth:api', 'suspended'])->group(function () {
         Route::get('/tutor/reviews/summary', [ReviewController::class, 'summary']);
         Route::get('/tutor/reviews', [ReviewController::class, 'index']);
         Route::get('/tutor/notifications', [TutorNotificationController::class, 'index']);
+        Route::post('/tutor/notifications/read-all', [TutorNotificationController::class, 'markAllAsRead']);
         
         Route::get('/tutor/profile', [TutorProfileController::class, 'me']);
         Route::patch('/tutor/profile', [TutorProfileController::class, 'update']);

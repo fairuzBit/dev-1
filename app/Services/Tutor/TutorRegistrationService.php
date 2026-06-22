@@ -76,12 +76,13 @@ class TutorRegistrationService
         }
 
         // Tambahkan Notifikasi Pengajuan Pending
+        $courseNames = \App\Models\Course::whereIn('id', $data['course_ids'])->pluck('name')->join(', ');
         \App\Models\Notification::create([
             'user_id' => $userId,
             'role' => 'learner',
             'type' => 'application',
             'title' => 'Pengajuan Tutor Sedang Diproses',
-            'message' => 'Berkas pengajuan Anda sebagai Tutor telah kami terima dan sedang dalam proses verifikasi oleh Admin. Harap tunggu.',
+            'message' => "Berkas pengajuan Anda sebagai Tutor untuk mata kuliah {$courseNames} telah kami terima dan sedang dalam proses verifikasi oleh Admin. Harap tunggu.",
             'is_read' => false,
         ]);
 

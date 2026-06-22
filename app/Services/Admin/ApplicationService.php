@@ -16,7 +16,7 @@ class ApplicationService
 
     public function approveApplication(int $id, int $adminId)
     {
-        $app = TutorApplication::findOrFail($id);
+        $app = TutorApplication::with(['user', 'course'])->findOrFail($id);
         $app->update([
             'status' => 'approved',
             'approved_by' => $adminId,
@@ -30,8 +30,9 @@ class ApplicationService
             $title = 'Pengajuan Naik Semester Disetujui';
             $message = "Selamat! Pengajuan Anda untuk naik ke semester {$app->new_semester} telah disetujui. Anda kini bisa mengajar mata kuliah yang lebih tinggi.";
         } else {
+            $courseName = $app->course ? $app->course->name : '';
             $title = 'Selamat! Anda Menjadi Tutor';
-            $message = 'Selamat! Pengajuan Anda telah disetujui Admin. Sekarang Anda resmi menjadi Tutor di KonekDin.';
+            $message = "Selamat! Pengajuan Anda sebagai tutor mata kuliah {$courseName} telah disetujui Admin. Sekarang Anda resmi menjadi Tutor di KonekDin.";
         }
 
         if ($app->portfolio_urls && $app->user->tutor) {
@@ -64,7 +65,7 @@ class ApplicationService
 
     public function rejectApplication(int $id, ?string $reason = null, ?int $adminId = null)
     {
-        $app = TutorApplication::findOrFail($id);
+        $app = TutorApplication::with(['user', 'course'])->findOrFail($id);
         $app->update([
             'status' => 'rejected',
             'admin_note' => $reason,
@@ -74,12 +75,19 @@ class ApplicationService
         $title = $app->new_semester !== null ? 'Pengajuan Naik Semester Ditolak' : 'Pengajuan Tutor Ditolak';
         $reasonText = $reason ? " Catatan Admin: {$reason}" : " Mohon perbaiki dokumen Anda dan ajukan ulang.";
         
+        $courseName = $app->course ? $app->course->name : '';
+        if ($app->new_semester !== null) {
+            $message = "Mohon maaf, pengajuan naik semester Anda untuk naik ke semester {$app->new_semester} ditolak.{$reasonText}";
+        } else {
+            $message = "Mohon maaf, pengajuan Anda sebagai tutor mata kuliah {$courseName} ditolak.{$reasonText}";
+        }
+        
         Notification::create([
             'user_id' => $app->user_id,
             'role' => 'learner',
             'type' => 'application',
             'title' => $title,
-            'message' => "Mohon maaf, pengajuan Anda ditolak.{$reasonText}",
+            'message' => $message,
             'is_read' => false,
         ]);
 

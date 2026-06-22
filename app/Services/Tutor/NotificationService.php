@@ -13,4 +13,15 @@ class NotificationService
             ->orderBy('created_at', 'desc')
             ->get();
     }
+
+    public function markAllAsRead(int $userId)
+    {
+        Notification::where('user_id', $userId)
+            ->where('role', 'tutor')
+            ->where('is_read', false)
+            ->update([
+                'is_read' => true,
+                'read_at' => now()
+            ]);
+    }
 }
