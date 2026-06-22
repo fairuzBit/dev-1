@@ -27,9 +27,10 @@ class BookingService
 
     public function getHistory(int $tutorId)
     {
-        return Booking::with('learner')
+        return Booking::with(['learner', 'course', 'bookingSlots.masterSlot', 'review'])
             ->where('tutor_id', $tutorId)
             ->whereIn('status', ['completed', 'rejected', 'cancelled'])
+            ->orderBy('booking_date', 'desc')
             ->get();
     }
 
