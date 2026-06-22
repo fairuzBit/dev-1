@@ -46,11 +46,16 @@ class StatsService
                 ];
             });
 
+        $pendingPayments = Booking::whereNotNull('payment_method')
+            ->where('status', 'pending')
+            ->count();
+
         return [
             'total_learners' => User::role('learner')->count(),
             'total_tutors' => User::role('tutor')->count(),
             'active_complaints' => $activeComplaints,
             'pending_verifications' => TutorApplication::where('status', 'pending')->count(),
+            'pending_payments' => $pendingPayments,
             'new_complaints' => $activeComplaints, // Alias
             'aktivitas_terbaru' => $this->getRecentActivities(),
             'top_tutors' => $topTutors,
