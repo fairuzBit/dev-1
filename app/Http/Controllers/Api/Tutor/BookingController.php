@@ -74,9 +74,22 @@ class BookingController extends Controller
                     ];
                 })->filter()->values();
 
+                // Format avatar learner
+                $avatarRaw = $h->learner->avatar ?? null;
+                $avatar = null;
+                if ($avatarRaw) {
+                    $avatar = str_starts_with($avatarRaw, 'http') || str_starts_with($avatarRaw, 'data:')
+                        ? $avatarRaw
+                        : asset('storage/' . $avatarRaw);
+                }
+
                 return [
                     'id'           => $h->id,
                     'title'        => $h->learner->name ?? 'Learner',
+                    'learner'      => [
+                        'name'   => $h->learner->name ?? 'Learner',
+                        'avatar' => $avatar,
+                    ],
                     'course'       => $h->course->name ?? 'Mata Kuliah',
                     'booking_date' => $h->booking_date ? $h->booking_date->format('Y-m-d') : null,
                     'slots'        => $slots,
@@ -86,46 +99,6 @@ class BookingController extends Controller
                 ];
             })
         ]);
-    }
-
-    /**
-     * Accept a booking (Tutor action)
-     */
-    public function accept(Request $request, $id)
-    {
-        $tutorId = $request->user()->tutor->id ?? null;
-        if (!$tutorId) return response()->json(['message' => 'Anda bukan tutor'], 403);
-
-        try {
-            $booking = $this->bookingService->acceptBooking($tutorId, $id);
-            return response()->json([
-                'success' => true,
-                'message' => 'Pesanan berhasil diterima',
-                'data'    => $booking
-            ]);
-        } catch (\Exception $e) {
-            return response()->json(['message' => 'Gagal menerima pesanan: ' . $e->getMessage()], 500);
-        }
-    }
-
-    /**
-     * Reject a booking (Tutor action)
-     */
-    public function reject(Request $request, $id)
-    {
-        $tutorId = $request->user()->tutor->id ?? null;
-        if (!$tutorId) return response()->json(['message' => 'Anda bukan tutor'], 403);
-
-        try {
-            $booking = $this->bookingService->rejectBooking($tutorId, $id);
-            return response()->json([
-                'success' => true,
-                'message' => 'Pesanan berhasil ditolak',
-                'data'    => $booking
-            ]);
-        } catch (\Exception $e) {
-            return response()->json(['message' => 'Gagal menolak pesanan: ' . $e->getMessage()], 500);
-        }
     }
 
     /**
