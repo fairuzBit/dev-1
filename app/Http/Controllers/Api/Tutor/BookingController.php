@@ -74,14 +74,13 @@ class BookingController extends Controller
                     ];
                 })->filter()->values();
 
-                // Format avatar learner
+                // Format avatar learner — sama dengan pola di TutorResource
                 $avatarRaw = $h->learner->avatar ?? null;
-                $avatar = null;
-                if ($avatarRaw) {
-                    $avatar = str_starts_with($avatarRaw, 'http') || str_starts_with($avatarRaw, 'data:')
+                $avatar = $avatarRaw
+                    ? (str_starts_with($avatarRaw, 'data:image')
                         ? $avatarRaw
-                        : asset('storage/' . $avatarRaw);
-                }
+                        : asset('storage/' . $avatarRaw))
+                    : null;
 
                 return [
                     'id'           => $h->id,
