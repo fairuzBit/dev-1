@@ -88,6 +88,7 @@ Route::middleware(['auth:api', 'suspended'])->group(function () {
         
         Route::get('/tutor/profile', [TutorProfileController::class, 'me']);
         Route::patch('/tutor/profile', [TutorProfileController::class, 'update']);
+        Route::patch('/tutor/profile/status', [TutorProfileController::class, 'toggleStatus']);
     });
     
     // KHUSUS ROLE: ADMIN

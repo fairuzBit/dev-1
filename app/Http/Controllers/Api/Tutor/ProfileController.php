@@ -58,4 +58,24 @@ class ProfileController extends Controller
             'data' => new \App\Http\Resources\TutorResource($tutor)
         ]);
     }
+
+    /**
+     * Toggle Tutor availability status (is_active)
+     */
+    public function toggleStatus(Request $request)
+    {
+        $tutor = $request->user()->tutor;
+        if (!$tutor) {
+            return response()->json(['message' => 'Anda bukan tutor'], 403);
+        }
+
+        $tutor->update([
+            'is_active' => !$tutor->is_active
+        ]);
+
+        return response()->json([
+            'message' => 'Status ketersediaan berhasil diperbarui',
+            'is_active' => (bool) $tutor->is_active
+        ]);
+    }
 }
