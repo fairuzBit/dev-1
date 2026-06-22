@@ -77,6 +77,8 @@ Route::middleware(['auth:api', 'suspended'])->group(function () {
         Route::post('/tutor/availability', [AvailabilityController::class, 'store']);
         
         Route::get('/tutor/bookings', [TutorBookingController::class, 'index']);
+        Route::patch('/tutor/bookings/{id}/accept', [TutorBookingController::class, 'accept']);
+        Route::patch('/tutor/bookings/{id}/reject', [TutorBookingController::class, 'reject']);
         Route::patch('/tutor/bookings/{id}/complete', [TutorBookingController::class, 'complete']);
 
         Route::get('/tutor/history', [TutorBookingController::class, 'history']);
