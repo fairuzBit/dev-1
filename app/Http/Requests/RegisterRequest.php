@@ -26,7 +26,7 @@ class RegisterRequest extends FormRequest
             'fullName' => 'required|string',
             'email' => 'required|email|unique:users|starts_with:111|ends_with:@mhs.dinus.ac.id', 
             'password' => 'required|min:8',
-            'nim' => 'required|string|size:12|unique:users,nim',
+            'nim' => 'nullable|string|size:12|unique:users,nim',
             'phone' => 'nullable|string',
         ];
     }
@@ -43,7 +43,6 @@ class RegisterRequest extends FormRequest
             'email.ends_with' => 'Pendaftaran hanya diperbolehkan menggunakan email mahasiswa UDINUS (@mhs.dinus.ac.id).',
             'password.required' => 'Password wajib diisi.',
             'password.min' => 'Password minimal terdiri dari 8 karakter.',
-            'nim.required' => 'NIM wajib diisi.',
             'nim.size' => 'NIM harus tepat berjumlah 12 karakter.',
             'nim.unique' => 'NIM ini sudah terdaftar.',
         ];
