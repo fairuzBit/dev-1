@@ -17,7 +17,6 @@ storage/logs/*
 Dockerfiles
 docker-compose.yml
 README.md
-docker
 tests
 phpunit.xml
 pint.json
