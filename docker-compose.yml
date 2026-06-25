@@ -1,0 +1,62 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: konekdin_app
+    restart: always
+    ports:
+      - "8000:80"
+    environment:
+      - APP_NAME=KonekDin
+      - APP_ENV=production
+      - APP_KEY=${APP_KEY}
+      - APP_DEBUG=false
+      - APP_URL=http://localhost:8000 # Change to your VPS domain or IP (e.g. http://your-vps-ip:8000)
+      - RUN_MIGRATIONS=true
+      - DB_CONNECTION=mysql
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_DATABASE=konekdin
+      - DB_USERNAME=konekdin_user
+      - DB_PASSWORD=${DB_PASSWORD}
+      - SESSION_DRIVER=database
+      - QUEUE_CONNECTION=database
+      - CACHE_STORE=database
+      - JWT_SECRET=${JWT_SECRET}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - konekdin_storage:/var/www/html/storage
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/up"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+
+  db:
+    image: mysql:8.0
+    container_name: konekdin_db
+    restart: always
+    environment:
+      - MYSQL_DATABASE=konekdin
+      - MYSQL_USER=konekdin_user
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD:-root_prod_password}
+    ports:
+      - "127.0.0.1:3306:3306" # Only accessible locally on VPS for security
+    volumes:
+      - konekdin_db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p$${MYSQL_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
+volumes:
+  konekdin_storage:
+  konekdin_db_data:
