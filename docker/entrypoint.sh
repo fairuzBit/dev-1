@@ -38,6 +38,13 @@ echo "Ensuring storage permissions..."
 chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
+# Update Nginx port configuration if PORT environment variable is set
+if [ -n "$PORT" ]; then
+    echo "Setting Nginx port to $PORT..."
+    sed -i "s/listen 80;/listen $PORT;/g" /etc/nginx/http.d/default.conf
+    sed -i "s/listen \[::\]:80;/listen [::]:$PORT;/g" /etc/nginx/http.d/default.conf
+fi
+
 # Start processes
 echo "Starting application services..."
 exec supervisord -c /etc/supervisor/conf.d/supervisord.conf
