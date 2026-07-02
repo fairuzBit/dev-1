@@ -38,6 +38,10 @@ echo "Ensuring storage permissions..."
 chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
+# Recreate storage symlink
+echo "Recreating storage symlink..."
+php artisan storage:link --force
+
 # Update Nginx port configuration if PORT environment variable is set
 if [ -n "$PORT" ]; then
     echo "Setting Nginx port to $PORT..."
