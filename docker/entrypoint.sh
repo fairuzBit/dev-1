@@ -33,6 +33,16 @@ php artisan route:cache
 php artisan view:cache
 php artisan event:cache
 
+# Ensure required storage directories exist (crucial when using Railway Volumes)
+echo "Ensuring storage directories exist..."
+mkdir -p /var/www/html/storage/app/public/avatars
+mkdir -p /var/www/html/storage/app/public/transcripts
+mkdir -p /var/www/html/storage/app/public/certificates
+mkdir -p /var/www/html/storage/framework/cache
+mkdir -p /var/www/html/storage/framework/sessions
+mkdir -p /var/www/html/storage/framework/views
+mkdir -p /var/www/html/storage/logs
+
 # Ensure correct permissions on runtime directories
 echo "Ensuring storage permissions..."
 chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
