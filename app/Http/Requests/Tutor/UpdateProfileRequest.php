@@ -25,7 +25,7 @@ class UpdateProfileRequest extends FormRequest
             'portfolio_urls' => 'nullable|array',
             'portfolio_urls.*' => 'url|max:255',
             'certificate_files' => 'nullable|array',
-            'certificate_files.*' => 'mimes:pdf,jpg,jpeg,png|max:5120',
+            'certificate_files.*' => 'mimes:pdf,jpg,jpeg,png|max:2048',
         ];
     }
 
