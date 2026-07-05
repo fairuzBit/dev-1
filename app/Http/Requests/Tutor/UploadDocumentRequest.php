@@ -22,7 +22,7 @@ class UploadDocumentRequest extends FormRequest
             'current_semester' => 'required|integer|min:2|max:14',
             'portfolio_urls' => 'nullable|array',
             'portfolio_urls.*' => 'url|max:255',
-            'skills' => 'nullable|json',
+            'skills' => 'nullable',
             'bio' => 'nullable|string|max:1000',
             'certificate_files' => 'nullable|array',
             'certificate_files.*' => 'mimes:pdf,jpg,jpeg,png|max:2048',

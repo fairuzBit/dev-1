@@ -54,7 +54,7 @@ class TutorRegistrationService
             [
                 'ipk' => $calculatedIpk,
                 'current_semester' => $data['current_semester'],
-                'skills' => isset($data['skills']) ? json_decode($data['skills'], true) : null,
+                'skills' => isset($data['skills']) ? (is_array($data['skills']) ? $data['skills'] : (is_string($data['skills']) ? json_decode($data['skills'], true) : null)) : null,
                 'bio' => $data['bio'] ?? null,
                 'portfolio_urls' => $data['portfolio_urls'] ?? null,
                 'certificate_files' => !empty($certPaths) ? $certPaths : null,
