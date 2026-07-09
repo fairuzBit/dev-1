@@ -11,6 +11,10 @@ class ReviewService
         $query = Review::with(['booking.learner', 'booking.course', 'booking.bookingSlots.masterSlot'])
             ->whereHas('booking', function($q) use ($tutorId) {
                 $q->where('tutor_id', $tutorId);
+            })
+            ->where(function ($q) {
+                $q->where('moderation_status', '!=', 'deleted_by_admin')
+                  ->orWhereNull('moderation_status');
             });
 
         if ($rating) {
@@ -24,6 +28,10 @@ class ReviewService
     {
         $reviewsQuery = Review::whereHas('booking', function($query) use ($tutorId) {
             $query->where('tutor_id', $tutorId);
+        })
+        ->where(function ($q) {
+            $q->where('moderation_status', '!=', 'deleted_by_admin')
+              ->orWhereNull('moderation_status');
         });
 
         $totalReviews = $reviewsQuery->count();

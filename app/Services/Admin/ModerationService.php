@@ -33,7 +33,31 @@ class ModerationService
             ]
         ]);
 
-        $review->delete();
+        $review->update([
+            'moderation_status' => 'deleted_by_admin',
+        ]);
+
+        // Recalculate tutor's rating
+        $tutor = $review->booking->tutor ?? null;
+        if ($tutor) {
+            $activeReviews = Review::whereHas('booking', function ($q) use ($tutor) {
+                $q->where('tutor_id', $tutor->id);
+            })
+            ->where(function ($q) {
+                $q->whereNull('moderation_status')
+                  ->orWhere('moderation_status', '!=', 'deleted_by_admin');
+            })
+            ->get();
+            
+            $totalReviews = $activeReviews->count();
+            $ratingAvg = $totalReviews > 0 ? round($activeReviews->avg('rating'), 1) : 0.0;
+            
+            $tutor->update([
+                'total_reviews' => $totalReviews,
+                'rating_avg' => $ratingAvg,
+            ]);
+        }
+
         return true;
     }
 

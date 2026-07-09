@@ -15,7 +15,7 @@ class UpgradeSemesterRequest extends FormRequest
     {
         return [
             'transcript_files' => 'required|array|min:1',
-            'transcript_files.*' => 'mimes:pdf|max:5120',
+            'transcript_files.*' => 'mimes:pdf|max:2048',
             'new_semester' => 'required|integer|min:2|max:14',
         ];
     }

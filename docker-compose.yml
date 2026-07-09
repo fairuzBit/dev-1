@@ -1,18 +1,18 @@
 services:
   app:
     build:
-      context: .
+      context: ./app
       dockerfile: Dockerfile
     container_name: konekdin_app
     restart: always
     ports:
-      - "8000:80"
+      - "8001:80"
     environment:
       - APP_NAME=KonekDin
       - APP_ENV=production
       - APP_KEY=${APP_KEY}
       - APP_DEBUG=false
-      - APP_URL=http://localhost:8000 # Change to your VPS domain or IP (e.g. http://your-vps-ip:8000)
+      - APP_URL=http://203.175.125.36:8001
       - RUN_MIGRATIONS=true
       - DB_CONNECTION=mysql
       - DB_HOST=db

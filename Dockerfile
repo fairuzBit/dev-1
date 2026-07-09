@@ -1,25 +1,5 @@
 # ==============================================================================
-# Stage 1: Build Frontend Assets (Vite + Inertia React)
-# ==============================================================================
-FROM node:20-alpine AS frontend-builder
-WORKDIR /app
-
-# Copy package configurations
-COPY package.json package-lock.json ./
-
-# Install npm dependencies
-RUN npm ci
-
-# Copy Vite, Tailwind, TS configs and sources
-COPY vite.config.ts tsconfig.json postcss.config.js* tailwind.config.js* ./
-COPY resources ./resources
-COPY public ./public
-
-# Build assets
-RUN npm run build
-
-# ==============================================================================
-# Stage 2: Install Composer Dependencies
+# Stage 1: Install Composer Dependencies
 # ==============================================================================
 FROM composer:2.7 AS composer-builder
 WORKDIR /app
@@ -34,6 +14,30 @@ RUN composer install \
     --no-scripts \
     --no-interaction \
     --ignore-platform-reqs
+
+# ==============================================================================
+# Stage 2: Build Frontend Assets (Vite + Inertia React)
+# ==============================================================================
+FROM node:20-alpine AS frontend-builder
+WORKDIR /app
+
+# Copy package configurations
+COPY package.json package-lock.json ./
+
+# Install npm dependencies
+RUN npm ci
+
+# Copy wayfinder-generated types from host context
+COPY resources/js/actions ./resources/js/actions
+COPY resources/js/routes ./resources/js/routes
+
+# Copy Vite, Tailwind, TS configs and sources
+COPY vite.config.ts tsconfig.json postcss.config.js* tailwind.config.js* ./
+COPY resources ./resources
+COPY public ./public
+
+# Build assets
+RUN npm run build
 
 # ==============================================================================
 # Stage 3: Production Application Image

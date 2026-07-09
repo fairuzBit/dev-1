@@ -102,7 +102,7 @@ class TutorResource extends JsonResource
             }),
 
             'reviews' => $this->whenLoaded('reviews', function () {
-                return $this->reviews->filter(fn($review) => $review->moderation_status === 'approved' || $review->moderation_status === 'pending')->map(function ($review) {
+                return $this->reviews->filter(fn($review) => $review->moderation_status !== 'deleted_by_admin')->map(function ($review) {
                     return [
                         'id' => $review->id,
                         'rating' => $review->rating,

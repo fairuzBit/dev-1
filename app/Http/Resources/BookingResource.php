@@ -47,11 +47,16 @@ class BookingResource extends JsonResource
             }),
             // Relasi ke Ulasan (Review) jika ada
             'review' => $this->whenLoaded('review', function () {
-                return $this->review ? [
+                if (!$this->review) {
+                    return null;
+                }
+                
+                $isDeleted = $this->review->moderation_status === 'deleted_by_admin';
+                return [
                     'id' => $this->review->id,
                     'rating' => $this->review->rating,
-                    'comment' => $this->review->comment,
-                ] : null;
+                    'comment' => $isDeleted ? 'Ulasan dihapus admin' : $this->review->comment,
+                ];
             }),
         ];
     }

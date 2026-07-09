@@ -33,10 +33,31 @@ php artisan route:cache
 php artisan view:cache
 php artisan event:cache
 
+# Ensure required storage directories exist (crucial when using Railway Volumes)
+echo "Ensuring storage directories exist..."
+mkdir -p /var/www/html/storage/app/public/avatars
+mkdir -p /var/www/html/storage/app/public/transcripts
+mkdir -p /var/www/html/storage/app/public/certificates
+mkdir -p /var/www/html/storage/framework/cache
+mkdir -p /var/www/html/storage/framework/sessions
+mkdir -p /var/www/html/storage/framework/views
+mkdir -p /var/www/html/storage/logs
+
 # Ensure correct permissions on runtime directories
 echo "Ensuring storage permissions..."
 chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+
+# Recreate storage symlink
+echo "Recreating storage symlink..."
+php artisan storage:link --force
+
+# Update Nginx port configuration if PORT environment variable is set
+if [ -n "$PORT" ]; then
+    echo "Setting Nginx port to $PORT..."
+    sed -i "s/listen 80;/listen $PORT;/g" /etc/nginx/http.d/default.conf
+    sed -i "s/listen \[::\]:80;/listen [::]:$PORT;/g" /etc/nginx/http.d/default.conf
+fi
 
 # Start processes
 echo "Starting application services..."

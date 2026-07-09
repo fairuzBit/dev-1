@@ -53,7 +53,7 @@ class DashboardService
      */
     public function getRecommendedTutors()
     {
-        return \App\Models\Tutor::with(['user', 'courses.course'])
+        return \App\Models\Tutor::with(['user', 'courses.course', 'reviews.booking.learner'])
             ->where('is_active', true)
             ->orderBy('rating_avg', 'desc')
             ->limit(3)

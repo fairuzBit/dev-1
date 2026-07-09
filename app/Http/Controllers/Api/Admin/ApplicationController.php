@@ -56,7 +56,7 @@ class ApplicationController extends Controller
                         ];
                     }))->toArray(),
                     'matkul' => $app->course ? [$app->course->name] : [],
-                    'keahlian' => ($app->user && $app->user->tutor && $app->user->tutor->bio) ? [$app->user->tutor->bio] : [],
+                    'keahlian' => ($app->user && $app->user->tutor && is_array($app->user->tutor->skills)) ? $app->user->tutor->skills : [],
                 ];
             })
         ]);
